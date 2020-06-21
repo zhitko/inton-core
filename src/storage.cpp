@@ -54,7 +54,7 @@ std::vector<double> Storage::getWave()
     return wave_data;
 }
 
-int Storage::getWaveFrameRate()
+uint32_t Storage::getWaveFrameRate()
 {
     // TODO: implement retrieve it from wave file
     return WAVE_FRAME_RATE;

@@ -7,14 +7,14 @@
 
 namespace IntonCore {
 
-std::vector<std::pair<int, int> > intensityToSegments(
+std::vector<std::pair<uint32_t, uint32_t> > intensityToSegments(
     std::vector<double> intensity,
     double threshold_absolute,
     double threshold_relative,
     uint32_t minimum_length
     );
 
-std::vector<std::pair<int, int> > intensitySmoothedToSegments(
+std::vector<std::pair<uint32_t, uint32_t> > intensitySmoothedToSegments(
     std::vector<double> intensity,
     std::vector<double> intensity_smoothed,
     uint32_t minimumLength

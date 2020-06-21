@@ -13,11 +13,11 @@ std::vector<double> normalizeVector(std::vector<double> vector, double target_mi
 std::vector<double> resizeVectorByMinMax(std::vector<double> vector, uint32_t target_size);
 std::vector<double> linerSmoothVector(std::vector<double> vector, uint32_t frame);
 
-std::vector<int> segmentsToMask(std::vector<std::pair<int, int>> segments, uint32_t result_length);
+std::vector<uint32_t> segmentsToMask(std::vector<std::pair<uint32_t, uint32_t>> segments, uint32_t result_length);
 
-std::vector<std::pair<int, int> > invertSegments(std::vector<std::pair<int, int> > segments);
+std::vector<std::pair<uint32_t, uint32_t> > invertSegments(std::vector<std::pair<uint32_t, uint32_t> > segments);
 
-int normalizeValue(int value, int source_size, int target_size);
+uint32_t normalizeValue(uint32_t value, uint32_t source_size, uint32_t target_size);
 
 template<class T>
 T getMedianValue(std::vector<T> vector)

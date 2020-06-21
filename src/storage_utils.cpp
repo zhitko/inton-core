@@ -6,19 +6,19 @@
 
 using namespace IntonCore;
 
-int Storage::convertIntensityPointsToWavePoints(int value)
+uint32_t Storage::convertIntensityPointsToWavePoints(uint32_t value)
 {
     return value * this->config->intensityShift();
 }
 
-double Storage::convertIntensityPointsToSec(int value)
+double Storage::convertIntensityPointsToSec(uint32_t value)
 {
     return this->convertWavePointsToSec(
         this->convertIntensityPointsToWavePoints(value)
     );
 }
 
-double Storage::convertWavePointsToSec(int value)
+double Storage::convertWavePointsToSec(uint32_t value)
 {
-    return 1.0 * value / this->getWaveFrameRate();
+    return (1.0 * value) / this->getWaveFrameRate();
 }

@@ -36,7 +36,7 @@ public:
     std::vector<double> getWave();
 
 
-    int getWaveFrameRate();
+    uint32_t getWaveFrameRate();
 
     /**
      * @brief getWaveNormalized
@@ -56,21 +56,21 @@ public:
      * @brief getManualSegmentsP
      * @return vector of pairs with section start position and section length
      */
-    std::vector<std::pair<int, int>> getManualSegmentsP();
-    std::vector<std::pair<int, int>> getManualSegmentsN();
-    std::vector<std::pair<int, int>> getManualSegmentsT();
+    std::vector<std::pair<uint32_t, uint32_t>> getManualSegmentsP();
+    std::vector<std::pair<uint32_t, uint32_t>> getManualSegmentsN();
+    std::vector<std::pair<uint32_t, uint32_t>> getManualSegmentsT();
 
-    std::vector<std::pair<int, int>> getAutoSegmentsByIntensity();
-    std::vector<std::pair<int, int>> getAutoSegmentsByIntensityInverted();
-    std::vector<int> getAutoSegmentsByIntensityMask();
+    std::vector<std::pair<uint32_t, uint32_t>> getAutoSegmentsByIntensity();
+    std::vector<std::pair<uint32_t, uint32_t>> getAutoSegmentsByIntensityInverted();
+    std::vector<uint32_t> getAutoSegmentsByIntensityMask();
 
-    std::vector<std::pair<int, int>> getAutoSegmentsByIntensitySmoothed();
-    std::vector<std::pair<int, int>> getAutoSegmentsByIntensitySmoothedInverted();
-    std::vector<int> getAutoSegmentsByIntensitySmoothedMask();
+    std::vector<std::pair<uint32_t, uint32_t>> getAutoSegmentsByIntensitySmoothed();
+    std::vector<std::pair<uint32_t, uint32_t>> getAutoSegmentsByIntensitySmoothedInverted();
+    std::vector<uint32_t> getAutoSegmentsByIntensitySmoothedMask();
 
-    int convertIntensityPointsToWavePoints(int value);
-    double convertIntensityPointsToSec(int value);
-    double convertWavePointsToSec(int value);
+    uint32_t convertIntensityPointsToWavePoints(uint32_t value);
+    double convertIntensityPointsToSec(uint32_t value);
+    double convertWavePointsToSec(uint32_t value);
 
 private:
     Config * config;
@@ -87,17 +87,17 @@ private:
     StorageCache<std::vector<double>> data_intensity_normalized;
     StorageCache<std::vector<double>> data_intensity_normalized_smoothed;
 
-    StorageCache<std::vector<std::pair<int, int>>> data_manual_segments_p;
-    StorageCache<std::vector<std::pair<int, int>>> data_manual_segments_t;
-    StorageCache<std::vector<std::pair<int, int>>> data_manual_segments_n;
+    StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_manual_segments_p;
+    StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_manual_segments_t;
+    StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_manual_segments_n;
 
-    StorageCache<std::vector<std::pair<int, int>>> data_auto_segments_by_intensity;
-    StorageCache<std::vector<int>> data_auto_segments_by_intensity_mask;
-    StorageCache<std::vector<std::pair<int, int>>> data_auto_segments_by_intensity_inverted;
+    StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_auto_segments_by_intensity;
+    StorageCache<std::vector<uint32_t>> data_auto_segments_by_intensity_mask;
+    StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_auto_segments_by_intensity_inverted;
 
-    StorageCache<std::vector<std::pair<int, int>>> data_auto_segments_by_intensity_smoothed;
-    StorageCache<std::vector<int>> data_auto_segments_by_intensity_smoothed_mask;
-    StorageCache<std::vector<std::pair<int, int>>> data_auto_segments_by_intensity_smoothed_inverted;
+    StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_auto_segments_by_intensity_smoothed;
+    StorageCache<std::vector<uint32_t>> data_auto_segments_by_intensity_smoothed_mask;
+    StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_auto_segments_by_intensity_smoothed_inverted;
 };
 
 }

@@ -64,7 +64,7 @@ std::vector<double> IntonCore::resizeVectorByMinMax(std::vector<double> vector, 
 
 }
 
-int IntonCore::normalizeValue(int value, int source_size, int target_size)
+uint32_t IntonCore::normalizeValue(uint32_t value, uint32_t source_size, uint32_t target_size)
 {
     return static_cast<int>(
         std::ceil(value * target_size / source_size)
@@ -101,13 +101,18 @@ std::vector<double> IntonCore::linerSmoothVector(std::vector<double> vector, uin
     return result;
 }
 
-std::vector<int> IntonCore::segmentsToMask(std::vector<std::pair<int, int> > segments, uint32_t result_length)
+std::vector<uint32_t> IntonCore::segmentsToMask(std::vector<std::pair<uint32_t, uint32_t> > segments, uint32_t result_length)
 {
-    std::vector<int> mask(result_length, 0);
+    std::vector<uint32_t> mask(result_length, 0);
+
+    for (uint32_t i=0; i<result_length; i++)
+    {
+        mask[i] = 0;
+    }
 
     for (auto &it: segments)
     {
-        for (int i=0; i<=it.second; i++)
+        for (uint32_t i=0; i<=it.second; i++)
         {
             mask[it.first + i] = 1;
         }
@@ -116,19 +121,19 @@ std::vector<int> IntonCore::segmentsToMask(std::vector<std::pair<int, int> > seg
     return mask;
 }
 
-std::vector<std::pair<int, int> > IntonCore::invertSegments(std::vector<std::pair<int, int> > segments)
+std::vector<std::pair<uint32_t, uint32_t> > IntonCore::invertSegments(std::vector<std::pair<uint32_t, uint32_t> > segments)
 {
-    std::vector<std::pair<int, int> > inverted;
+    std::vector<std::pair<uint32_t, uint32_t> > inverted;
 
-    std::vector<std::pair<int, int> >::iterator it = segments.begin();
+    std::vector<std::pair<uint32_t, uint32_t> >::iterator it = segments.begin();
 
-    int from = it.base()->first + it.base()->second;
+    uint32_t from = it.base()->first + it.base()->second;
 
     it++;
 
     for(; it != segments.end(); it++)
     {
-        inverted.push_back(std::pair<int, int>(from, it.base()->first - from));
+        inverted.push_back(std::pair<uint32_t, uint32_t>(from, it.base()->first - from));
         from = it.base()->first + it.base()->second;
     }
 

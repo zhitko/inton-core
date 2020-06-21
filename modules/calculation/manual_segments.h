@@ -2,12 +2,13 @@
 #define MANUAL_SEGMENTS_H
 
 #include <vector>
+#include <stdint.h>
 
 struct WaveFile;
 
 namespace IntonCore {
 
-std::vector<std::pair<int, int> > waveFileToManualSegmants(WaveFile* waveFile, char marker);
+std::vector<std::pair<uint32_t, uint32_t> > waveFileToManualSegmants(WaveFile* waveFile, char marker);
 
 }
 

@@ -4,9 +4,9 @@
 #include "modules/wav_file/wavFile.h"
 
 
-std::vector<std::pair<int, int> > IntonCore::waveFileToManualSegmants(WaveFile *waveFile, char marker)
+std::vector<std::pair<uint32_t, uint32_t> > IntonCore::waveFileToManualSegmants(WaveFile *waveFile, char marker)
 {
-    std::vector<std::pair<int, int> > data;
+    std::vector<std::pair<uint32_t, uint32_t> > data;
 
     DEBUG("Get segments from file for %c", marker)
 
@@ -43,7 +43,7 @@ std::vector<std::pair<int, int> > IntonCore::waveFileToManualSegmants(WaveFile *
 
     int cuePointsCount = littleEndianBytesToUInt16(waveFile->cueChunk->cuePointsCount);
 
-    int *pointsFrom = new int[cuePointsCount] ();
+    uint32_t *pointsFrom = new uint32_t[cuePointsCount] ();
     uint32_t *pointsLength = new uint32_t[cuePointsCount] ();
 
     DEBUG("cueChunks")

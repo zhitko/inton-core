@@ -21,11 +21,11 @@ double getRelativeLimitForSement(uint32_t start_position, uint32_t stop_position
     return limit;
 }
 
-std::vector<std::pair<int, int> > IntonCore::intensityToSegments(std::vector<double> intensity, double threshold_absolute, double threshold_relative, uint32_t minimum_length)
+std::vector<std::pair<uint32_t, uint32_t> > IntonCore::intensityToSegments(std::vector<double> intensity, double threshold_absolute, double threshold_relative, uint32_t minimum_length)
 {
     DEBUG("intensityToSegments %f, %f, %i", threshold_absolute, threshold_relative, minimum_length)
 
-    std::vector<std::pair<int, int> > result;
+    std::vector<std::pair<uint32_t, uint32_t> > result;
 
     if (intensity.empty()) return result;
 
@@ -106,13 +106,13 @@ std::vector<std::pair<int, int> > IntonCore::intensityToSegments(std::vector<dou
     return result;
     }
 
-    std::vector<std::pair<int, int> > IntonCore::intensitySmoothedToSegments(std::vector<double> intensity,
+    std::vector<std::pair<uint32_t, uint32_t> > IntonCore::intensitySmoothedToSegments(std::vector<double> intensity,
                                                                             std::vector<double> intensity_smoothed,
                                                                             uint32_t minimumLength)
     {
         DEBUG("intensitySmoothedToSegments: %i, %i", intensity.size(), intensity_smoothed.size())
 
-        std::vector<std::pair<int, int> > result;
+        std::vector<std::pair<uint32_t, uint32_t> > result;
 
         if (intensity.empty()) return result;
 

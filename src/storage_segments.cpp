@@ -9,7 +9,7 @@
 
 using namespace IntonCore;
 
-std::vector<std::pair<int, int> > Storage::getManualSegmentsP()
+std::vector<std::pair<uint32_t, uint32_t> > Storage::getManualSegmentsP()
 {
     RETURN_VALUE_IF_EXIST(this->data_manual_segments_p)
 
@@ -17,16 +17,16 @@ std::vector<std::pair<int, int> > Storage::getManualSegmentsP()
 
     WaveFile * wave_file = this->getWaveFile();
 
-    if (!wave_file) return std::vector<std::pair<int, int> >();
+    if (!wave_file) return std::vector<std::pair<uint32_t, uint32_t> >();
 
-    std::vector<std::pair<int, int> > segments = waveFileToManualSegmants(wave_file, WAVE_FILE_SEGMENT_PRE_NUCLEUS);
+    std::vector<std::pair<uint32_t, uint32_t> > segments = waveFileToManualSegmants(wave_file, WAVE_FILE_SEGMENT_PRE_NUCLEUS);
 
     this->data_manual_segments_p.setValue(segments);
 
     return segments;
 }
 
-std::vector<std::pair<int, int> > Storage::getManualSegmentsN()
+std::vector<std::pair<uint32_t, uint32_t> > Storage::getManualSegmentsN()
 {
     RETURN_VALUE_IF_EXIST(this->data_manual_segments_n)
 
@@ -34,16 +34,16 @@ std::vector<std::pair<int, int> > Storage::getManualSegmentsN()
 
     WaveFile * wave_file = this->getWaveFile();
 
-    if (!wave_file) return std::vector<std::pair<int, int> >();
+    if (!wave_file) return std::vector<std::pair<uint32_t, uint32_t> >();
 
-    std::vector<std::pair<int, int> > segments = waveFileToManualSegmants(wave_file, WAVE_FILE_SEGMENT_NUCLEUS);
+    std::vector<std::pair<uint32_t, uint32_t> > segments = waveFileToManualSegmants(wave_file, WAVE_FILE_SEGMENT_NUCLEUS);
 
     this->data_manual_segments_n.setValue(segments);
 
     return segments;
 }
 
-std::vector<std::pair<int, int> > Storage::getManualSegmentsT()
+std::vector<std::pair<uint32_t, uint32_t> > Storage::getManualSegmentsT()
 {
     RETURN_VALUE_IF_EXIST(this->data_manual_segments_t)
 
@@ -51,16 +51,16 @@ std::vector<std::pair<int, int> > Storage::getManualSegmentsT()
 
     WaveFile * wave_file = this->getWaveFile();
 
-    if (!wave_file) return std::vector<std::pair<int, int> >();
+    if (!wave_file) return std::vector<std::pair<uint32_t, uint32_t> >();
 
-    std::vector<std::pair<int, int> > segments = waveFileToManualSegmants(wave_file, WAVE_FILE_SEGMENT_POST_NUCLEUS);
+    std::vector<std::pair<uint32_t, uint32_t> > segments = waveFileToManualSegmants(wave_file, WAVE_FILE_SEGMENT_POST_NUCLEUS);
 
     this->data_manual_segments_t.setValue(segments);
 
     return segments;
 }
 
-std::vector<std::pair<int, int> > Storage::getAutoSegmentsByIntensity()
+std::vector<std::pair<uint32_t, uint32_t> > Storage::getAutoSegmentsByIntensity()
 {
     RETURN_VALUE_IF_EXIST(this->data_auto_segments_by_intensity)
 
@@ -68,9 +68,9 @@ std::vector<std::pair<int, int> > Storage::getAutoSegmentsByIntensity()
 
     auto intensity = this->getIntensityNormalizedSmoothed();
 
-    if (intensity.empty()) return std::vector<std::pair<int, int> >();
+    if (intensity.empty()) return std::vector<std::pair<uint32_t, uint32_t> >();
 
-    std::vector<std::pair<int, int> > segments = intensityToSegments(
+    std::vector<std::pair<uint32_t, uint32_t> > segments = intensityToSegments(
         intensity,
         this->config->segmentsByIntensityThresholdAbsolute(),
         this->config->segmentsByIntensityThresholdRelative(),
@@ -82,7 +82,7 @@ std::vector<std::pair<int, int> > Storage::getAutoSegmentsByIntensity()
     return segments;
 }
 
-std::vector<std::pair<int, int> > Storage::getAutoSegmentsByIntensityInverted()
+std::vector<std::pair<uint32_t, uint32_t> > Storage::getAutoSegmentsByIntensityInverted()
 {
     RETURN_VALUE_IF_EXIST(this->data_auto_segments_by_intensity_inverted)
 
@@ -90,16 +90,16 @@ std::vector<std::pair<int, int> > Storage::getAutoSegmentsByIntensityInverted()
 
     auto segments = this->getAutoSegmentsByIntensity();
 
-    if (segments.empty()) return std::vector<std::pair<int, int> >();
+    if (segments.empty()) return std::vector<std::pair<uint32_t, uint32_t> >();
 
-    std::vector<std::pair<int, int> > inverted = invertSegments(segments);
+    std::vector<std::pair<uint32_t, uint32_t> > inverted = invertSegments(segments);
 
     this->data_auto_segments_by_intensity_inverted.setValue(inverted);
 
     return inverted;
 }
 
-std::vector<int> Storage::getAutoSegmentsByIntensityMask()
+std::vector<uint32_t> Storage::getAutoSegmentsByIntensityMask()
 {
     RETURN_VALUE_IF_EXIST(this->data_auto_segments_by_intensity_mask)
 
@@ -107,7 +107,7 @@ std::vector<int> Storage::getAutoSegmentsByIntensityMask()
 
     auto segments = this->getAutoSegmentsByIntensity();
 
-    if (segments.empty()) return std::vector<int>();
+    if (segments.empty()) return std::vector<uint32_t>();
 
     auto intensity = this->getIntensityNormalized();
 
@@ -118,7 +118,7 @@ std::vector<int> Storage::getAutoSegmentsByIntensityMask()
     return mask;
 }
 
-std::vector<std::pair<int, int> > Storage::getAutoSegmentsByIntensitySmoothed()
+std::vector<std::pair<uint32_t, uint32_t> > Storage::getAutoSegmentsByIntensitySmoothed()
 {
     RETURN_VALUE_IF_EXIST(this->data_auto_segments_by_intensity_smoothed)
 
@@ -126,11 +126,11 @@ std::vector<std::pair<int, int> > Storage::getAutoSegmentsByIntensitySmoothed()
 
     auto intensity = this->getIntensityNormalized();
 
-    if (intensity.empty()) return std::vector<std::pair<int, int> >();
+    if (intensity.empty()) return std::vector<std::pair<uint32_t, uint32_t> >();
 
     auto intensity_smoothed = this->getIntensityNormalizedSmoothed();
 
-    std::vector<std::pair<int, int> > segments = intensitySmoothedToSegments(
+    std::vector<std::pair<uint32_t, uint32_t> > segments = intensitySmoothedToSegments(
         intensity,
         intensity_smoothed,
         this->config->segmentsByIntensityMinimumLengthPoints(WAVE_FRAME_RATE)
@@ -141,7 +141,7 @@ std::vector<std::pair<int, int> > Storage::getAutoSegmentsByIntensitySmoothed()
     return segments;
 }
 
-std::vector<std::pair<int, int> > Storage::getAutoSegmentsByIntensitySmoothedInverted()
+std::vector<std::pair<uint32_t, uint32_t> > Storage::getAutoSegmentsByIntensitySmoothedInverted()
 {
     RETURN_VALUE_IF_EXIST(this->data_auto_segments_by_intensity_smoothed_inverted)
 
@@ -149,16 +149,16 @@ std::vector<std::pair<int, int> > Storage::getAutoSegmentsByIntensitySmoothedInv
 
     auto segments = this->getAutoSegmentsByIntensitySmoothed();
 
-    if (segments.empty()) return std::vector<std::pair<int, int> >();
+    if (segments.empty()) return std::vector<std::pair<uint32_t, uint32_t> >();
 
-    std::vector<std::pair<int, int> > inverted = invertSegments(segments);
+    std::vector<std::pair<uint32_t, uint32_t> > inverted = invertSegments(segments);
 
     this->data_auto_segments_by_intensity_smoothed_inverted.setValue(inverted);
 
     return inverted;
 }
 
-std::vector<int> Storage::getAutoSegmentsByIntensitySmoothedMask()
+std::vector<uint32_t> Storage::getAutoSegmentsByIntensitySmoothedMask()
 {
     RETURN_VALUE_IF_EXIST(this->data_auto_segments_by_intensity_smoothed_mask)
 
@@ -166,7 +166,7 @@ std::vector<int> Storage::getAutoSegmentsByIntensitySmoothedMask()
 
     auto segments = this->getAutoSegmentsByIntensitySmoothed();
 
-    if (segments.empty()) return std::vector<int>();
+    if (segments.empty()) return std::vector<uint32_t>();
 
     auto intensity = this->getIntensityNormalized();
 
