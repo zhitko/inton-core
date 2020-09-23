@@ -3,15 +3,12 @@
 
 #include "IntonCore_global.h"
 
+#include "storage_helpers.h"
+
 #include "storagecache.h"
 
 #include <vector>
 #include <string>
-
-#define RETURN_IF_EXIST(storage) \
-    if ((storage).isExists()) return ((storage).getValue());
-#define RETURN_VALUE_IF_EXIST(storage) \
-    if ((storage).isExists()) return *((storage).getValue());
 
 struct WaveFile;
 
@@ -68,6 +65,25 @@ public:
     std::vector<std::pair<uint32_t, uint32_t>> getAutoSegmentsByIntensitySmoothedInverted();
     std::vector<uint32_t> getAutoSegmentsByIntensitySmoothedMask();
 
+    /**
+     * Metrics API
+     */
+
+    long getConsonantsAndSilenceCount();
+    double getConsonantsAndSilenceLengthMean();
+    double getConsonantsAndSilenceLengthVariance();
+    double getConsonantsAndSilenceLengthSkewness();
+    double getConsonantsAndSilenceLengthKurtosis();
+    long getVowelsCount();
+    double getVowelsLengthMean();
+    double getVowelsLengthVariance();
+    double getVowelsLengthSkewness();
+    double getVowelsLengthKurtosis();
+
+    /**
+     * Utils
+     */
+
     uint32_t convertIntensityPointsToWavePoints(uint32_t value);
     double convertIntensityPointsToSec(uint32_t value);
     double convertWavePointsToSec(uint32_t value);
@@ -98,6 +114,9 @@ private:
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_auto_segments_by_intensity_smoothed;
     StorageCache<std::vector<uint32_t>> data_auto_segments_by_intensity_smoothed_mask;
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_auto_segments_by_intensity_smoothed_inverted;
+
+    StorageCache<DistributionMoments> data_consonants_and_silence_length_distribution_moments;
+    StorageCache<DistributionMoments> data_vowels_length_distribution_moments;
 };
 
 }

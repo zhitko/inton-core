@@ -103,19 +103,25 @@ std::vector<double> IntonCore::linerSmoothVector(std::vector<double> vector, uin
 
 std::vector<uint32_t> IntonCore::segmentsToMask(std::vector<std::pair<uint32_t, uint32_t> > segments, uint32_t result_length)
 {
-    std::vector<uint32_t> mask(result_length, 0);
+    std::vector<uint32_t> mask(result_length, 2);
 
-    for (uint32_t i=0; i<result_length; i++)
-    {
-        mask[i] = 0;
-    }
+    uint32_t min = result_length;
+    uint32_t max = 0;
 
     for (auto &it: segments)
     {
+        if (min > it.first) min = it.first;
+        if (max < (it.first + it.second)) max = it.first + it.second;
+
         for (uint32_t i=0; i<=it.second; i++)
         {
             mask[it.first + i] = 1;
         }
+    }
+
+    for (uint32_t i=min; i<=max; i++)
+    {
+        if (mask[i] == 2) mask[i] = 0;
     }
 
     return mask;

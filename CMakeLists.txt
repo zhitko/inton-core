@@ -11,6 +11,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 set(PROJECT_NAME IntonCore)
 
 set(SPTK_INCLUDE 3party/SPTK-3.11/include)
+set(ALG_INCLUDE 3party/alglib-3.16.0/src)
 
 file(GLOB MODULES_SOURCES modules/*/*.cpp)
 file(GLOB MODULES_HEADERS modules/*/*.h)
@@ -23,14 +24,19 @@ add_library(modules OBJECT
 file(GLOB SOURCES src/*.cpp)
 file(GLOB HEADERS include/*.h)
 
+file(GLOB ALG_SOURCES ${ALG_INCLUDE}/*.cpp)
+file(GLOB ALG_HEADERS ${ALG_INCLUDE}/*.h)
+
 add_library(${PROJECT_NAME} SHARED
     $<TARGET_OBJECTS:modules>
     ${HEADERS}
     ${SOURCES}
     ${SPTK_INCLUDE}/SPTK.h
+    ${ALG_SOURCES}
+    ${ALG_HEADERS}
 )
 
-include_directories(include ${SPTK_INCLUDE})
+include_directories(include ${SPTK_INCLUDE} ${ALG_INCLUDE})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}

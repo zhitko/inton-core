@@ -15,7 +15,7 @@ double Storage::convertIntensityPointsToSec(uint32_t value)
 {
     return this->convertWavePointsToSec(
         this->convertIntensityPointsToWavePoints(value)
-    );
+        );
 }
 
 double Storage::convertWavePointsToSec(uint32_t value)
