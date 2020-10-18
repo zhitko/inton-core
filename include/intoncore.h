@@ -4,6 +4,7 @@
 #include "IntonCore_global.h"
 #include "config.h"
 #include "storage.h"
+#include "helpers.h"
 
 #include <string>
 

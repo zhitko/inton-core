@@ -145,4 +145,6 @@ std::vector<std::pair<uint32_t, uint32_t> > IntonCore::intensityToSegments(std::
                 segment_length = 0;
             }
         }
+
+        return result;
     }

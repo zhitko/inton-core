@@ -892,6 +892,7 @@ WaveFile * makeWaveFile(
 ) {
     WaveFile *wave = initWaveFile();
 
+    wave->file = nullptr;
     wave->waveHeader = waveHeader;
     wave->formatChunk = formatChunk;
     wave->dataChunk = dataChunk;
@@ -1281,6 +1282,7 @@ void saveWaveFile(WaveFile *waveFile, const char *filePath)
         }
     }
     fclose(waveFile->file);
+    waveFile->file = nullptr;
 }
 
 enum HostEndiannessType getHostEndianness()
