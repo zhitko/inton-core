@@ -69,3 +69,23 @@ std::vector<double> Storage::getIntensityNormalizedSmoothed()
 
     return smoothed;
 }
+
+std::vector<double> Storage::getIntensityNormalizedDoubleSmoothed()
+{
+    RETURN_VALUE_IF_EXIST(this->data_intensity_normalized_double_smoothed)
+
+    DEBUG("Get intensity normalized double smoothed")
+
+    auto data = this->getIntensityNormalizedSmoothed();
+
+    if (data.empty()) return std::vector<double>();
+
+    auto smoothed = linerSmoothVector(
+        data,
+        config->intensityDoubleSmoothFrame()
+    );
+
+    this->data_intensity_normalized_double_smoothed.setValue(smoothed);
+
+    return smoothed;
+}

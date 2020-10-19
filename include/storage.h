@@ -48,6 +48,7 @@ public:
     std::vector<double> getIntensity();
     std::vector<double> getIntensityNormalized();
     std::vector<double> getIntensityNormalizedSmoothed();
+    std::vector<double> getIntensityNormalizedDoubleSmoothed();
 
     /**
      * @brief getManualSegmentsP
@@ -102,6 +103,7 @@ private:
     StorageCache<std::vector<double>> data_intensity;
     StorageCache<std::vector<double>> data_intensity_normalized;
     StorageCache<std::vector<double>> data_intensity_normalized_smoothed;
+    StorageCache<std::vector<double>> data_intensity_normalized_double_smoothed;
 
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_manual_segments_p;
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_manual_segments_t;

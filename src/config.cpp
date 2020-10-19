@@ -16,6 +16,7 @@ void Config::loadDefaults()
     this->intensity_frame = CONFIG_DEFUALT_INTENSIVE_FRAME;
     this->intensity_shift = CONFIG_DEFUALT_INTENSIVE_SHIFT;
     this->intensity_smooth_frame = CONFIG_DEFUALT_INTENSIVE_SMOOTH_FRAME;
+    this->intensity_double_smooth_frame = CONFIG_DEFUALT_INTENSIVE_DOUBLE_SMOOTH_FRAME;
 
     this->segments_by_intensity_threshold_absolute = SEGMANTS_BY_INTENSITY_THRESHOLD_ABSOLUTE;
     this->segments_by_intensity_threshold_relative = SEGMANTS_BY_INTENSITY_THRESHOLD_RELATIVE;
@@ -60,6 +61,16 @@ uint32_t Config::intensitySmoothFrame()
 void Config::setIntensitySmoothFrame(uint32_t value)
 {
     this->intensity_smooth_frame = value;
+}
+
+uint32_t Config::intensityDoubleSmoothFrame()
+{
+    return this->intensity_double_smooth_frame;
+}
+
+void Config::setIntensityDoubleSmoothFrame(uint32_t value)
+{
+    this->intensity_double_smooth_frame = value;
 }
 
 double Config::segmentsByIntensityThresholdAbsolute()

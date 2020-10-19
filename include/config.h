@@ -38,6 +38,13 @@ public:
     void setIntensitySmoothFrame(uint32_t value);
 
     /**
+     * @brief intensityDoubleSmoothFrame
+     * @return frame used to liner second smooth for intensity
+     */
+    uint32_t intensityDoubleSmoothFrame();
+    void setIntensityDoubleSmoothFrame(uint32_t value);
+
+    /**
      * @brief segmentsByIntensityThresholdAbsolute
      * @return absolute theshold to calculate segments using intensity
      */
@@ -65,6 +72,7 @@ private:
     uint32_t intensity_frame;
     uint32_t intensity_shift;
     uint32_t intensity_smooth_frame;
+    uint32_t intensity_double_smooth_frame;
 
     double segments_by_intensity_threshold_relative;
     double segments_by_intensity_threshold_absolute;
