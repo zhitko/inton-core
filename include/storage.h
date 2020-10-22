@@ -66,16 +66,30 @@ public:
     std::vector<std::pair<uint32_t, uint32_t>> getAutoSegmentsByIntensitySmoothedInverted();
     std::vector<uint32_t> getAutoSegmentsByIntensitySmoothedMask();
 
+    std::vector<std::pair<uint32_t, uint32_t>> getAutoSegmentsByIntensityDoubleSmoothed();
+    std::vector<std::pair<uint32_t, uint32_t>> getAutoSegmentsByIntensityDoubleSmoothedInverted();
+    std::vector<uint32_t> getAutoSegmentsByIntensityDoubleSmoothedMask();
+
     /**
      * Metrics API
      */
 
     long getConsonantsAndSilenceCount();
+    double getConsonantsAndSilenceLength();
     double getConsonantsAndSilenceLengthMean();
     double getConsonantsAndSilenceLengthVariance();
     double getConsonantsAndSilenceLengthSkewness();
     double getConsonantsAndSilenceLengthKurtosis();
+
+    long getSilenceCount();
+    double getSilenceLength();
+    double getSilenceLengthMean();
+    double getSilenceLengthVariance();
+    double getSilenceLengthSkewness();
+    double getSilenceLengthKurtosis();
+
     long getVowelsCount();
+    double getVowelsLength();
     double getVowelsLengthMean();
     double getVowelsLengthVariance();
     double getVowelsLengthSkewness();
@@ -117,7 +131,12 @@ private:
     StorageCache<std::vector<uint32_t>> data_auto_segments_by_intensity_smoothed_mask;
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_auto_segments_by_intensity_smoothed_inverted;
 
+    StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_auto_segments_by_intensity_double_smoothed;
+    StorageCache<std::vector<uint32_t>> data_auto_segments_by_intensity_double_smoothed_mask;
+    StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_auto_segments_by_intensity_double_smoothed_inverted;
+
     StorageCache<DistributionMoments> data_consonants_and_silence_length_distribution_moments;
+    StorageCache<DistributionMoments> data_silence_length_distribution_moments;
     StorageCache<DistributionMoments> data_vowels_length_distribution_moments;
 };
 

@@ -136,7 +136,7 @@ std::vector<std::pair<uint32_t, uint32_t> > Storage::getAutoSegmentsByIntensityS
         this->config->segmentsByIntensityMinimumLengthPoints(WAVE_FRAME_RATE)
         );
 
-    this->data_auto_segments_by_intensity.setValue(segments);
+    this->data_auto_segments_by_intensity_smoothed.setValue(segments);
 
     return segments;
 }
@@ -173,6 +173,65 @@ std::vector<uint32_t> Storage::getAutoSegmentsByIntensitySmoothedMask()
     auto mask = segmentsToMask(segments, intensity.size());
 
     this->data_auto_segments_by_intensity_smoothed_mask.setValue(mask);
+
+    return mask;
+}
+
+std::vector<std::pair<uint32_t, uint32_t> > Storage::getAutoSegmentsByIntensityDoubleSmoothed()
+{
+    RETURN_VALUE_IF_EXIST(this->data_auto_segments_by_intensity_double_smoothed)
+
+    DEBUG("Calculate segments using intensity double smoothed")
+
+    auto intensity = this->getIntensityNormalizedSmoothed();
+
+    if (intensity.empty()) return std::vector<std::pair<uint32_t, uint32_t> >();
+
+    auto intensity_smoothed = this->getIntensityNormalizedDoubleSmoothed();
+
+    std::vector<std::pair<uint32_t, uint32_t> > segments = intensitySmoothedToSegments(
+        intensity,
+        intensity_smoothed,
+        this->config->segmentsByIntensityMinimumLengthPoints(WAVE_FRAME_RATE)
+        );
+
+    this->data_auto_segments_by_intensity_double_smoothed.setValue(segments);
+
+    return segments;
+}
+
+std::vector<std::pair<uint32_t, uint32_t> > Storage::getAutoSegmentsByIntensityDoubleSmoothedInverted()
+{
+    RETURN_VALUE_IF_EXIST(this->data_auto_segments_by_intensity_double_smoothed_inverted)
+
+    DEBUG("Calculate segments using intensity double smoothed inverted")
+
+    auto segments = this->getAutoSegmentsByIntensityDoubleSmoothed();
+
+    if (segments.empty()) return std::vector<std::pair<uint32_t, uint32_t> >();
+
+    std::vector<std::pair<uint32_t, uint32_t> > inverted = invertSegments(segments);
+
+    this->data_auto_segments_by_intensity_smoothed_inverted.setValue(inverted);
+
+    return inverted;
+}
+
+std::vector<uint32_t> Storage::getAutoSegmentsByIntensityDoubleSmoothedMask()
+{
+    RETURN_VALUE_IF_EXIST(this->data_auto_segments_by_intensity_smoothed_mask)
+
+    DEBUG("Calculate mask for segments using intensity double smoothed")
+
+    auto segments = this->getAutoSegmentsByIntensityDoubleSmoothed();
+
+    if (segments.empty()) return std::vector<uint32_t>();
+
+    auto intensity = this->getIntensityNormalized();
+
+    auto mask = segmentsToMask(segments, intensity.size());
+
+    this->data_auto_segments_by_intensity_double_smoothed_mask.setValue(mask);
 
     return mask;
 }

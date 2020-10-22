@@ -13,6 +13,7 @@
 struct DistributionMoments
 {
     long count;
+    double length;
     double mean;
     double variance;
     double skewness;

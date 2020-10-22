@@ -16,6 +16,7 @@ DistributionMoments calculateDistributionMoments(std::vector<std::pair<uint32_t,
     DistributionMoments distributionMoments;
 
     distributionMoments.count = segments.size();
+    distributionMoments.length = 0;
 
     DEBUG("DistributionMoments set vector values")
     alglib::real_1d_array x;
@@ -23,6 +24,7 @@ DistributionMoments calculateDistributionMoments(std::vector<std::pair<uint32_t,
     for(long i=0; i<distributionMoments.count; i++)
     {
         x[i] = segments.at(i).second;
+        distributionMoments.length += x[i];
     }
 
     DEBUG("DistributionMoments calculation")
@@ -54,6 +56,24 @@ long Storage::getConsonantsAndSilenceCount()
     this->data_consonants_and_silence_length_distribution_moments.setValue(distributionMoments);
 
     return distributionMoments.count;
+}
+
+double Storage::getConsonantsAndSilenceLength()
+{
+    if (this->data_consonants_and_silence_length_distribution_moments.isExists())
+        return this->data_consonants_and_silence_length_distribution_moments.getValue()->length;
+
+    DEBUG("Calculate metrics consonants and silence length")
+
+    auto segments = this->getAutoSegmentsByIntensitySmoothedInverted();
+
+    if (segments.empty()) return 0;
+
+    auto distributionMoments = calculateDistributionMoments(segments);
+
+    this->data_consonants_and_silence_length_distribution_moments.setValue(distributionMoments);
+
+    return distributionMoments.length;
 }
 
 double Storage::getConsonantsAndSilenceLengthMean()
@@ -128,6 +148,114 @@ double Storage::getConsonantsAndSilenceLengthKurtosis()
     return distributionMoments.kurtosis;
 }
 
+long Storage::getSilenceCount()
+{
+    if (this->data_silence_length_distribution_moments.isExists())
+        return this->data_silence_length_distribution_moments.getValue()->count;
+
+    DEBUG("Calculate metrics silence count")
+
+    auto segments = this->getAutoSegmentsByIntensityDoubleSmoothedInverted();
+
+    if (segments.empty()) return 0;
+
+    auto distributionMoments = calculateDistributionMoments(segments);
+
+    this->data_silence_length_distribution_moments.setValue(distributionMoments);
+
+    return distributionMoments.count;
+}
+
+double Storage::getSilenceLength()
+{
+    if (this->data_silence_length_distribution_moments.isExists())
+        return this->data_silence_length_distribution_moments.getValue()->length;
+
+    DEBUG("Calculate metrics silence length")
+
+    auto segments = this->getAutoSegmentsByIntensityDoubleSmoothedInverted();
+
+    if (segments.empty()) return 0;
+
+    auto distributionMoments = calculateDistributionMoments(segments);
+
+    this->data_silence_length_distribution_moments.setValue(distributionMoments);
+
+    return distributionMoments.length;
+}
+
+double Storage::getSilenceLengthMean()
+{
+    if (this->data_silence_length_distribution_moments.isExists())
+        return this->data_silence_length_distribution_moments.getValue()->mean;
+
+    DEBUG("Calculate metrics silence mean")
+
+    auto segments = this->getAutoSegmentsByIntensityDoubleSmoothedInverted();
+
+    if (segments.empty()) return 0;
+
+    auto distributionMoments = calculateDistributionMoments(segments);
+
+    this->data_silence_length_distribution_moments.setValue(distributionMoments);
+
+    return distributionMoments.mean;
+}
+
+double Storage::getSilenceLengthVariance()
+{
+    if (this->data_silence_length_distribution_moments.isExists())
+        return this->data_silence_length_distribution_moments.getValue()->variance;
+
+    DEBUG("Calculate metrics silence variance")
+
+    auto segments = this->getAutoSegmentsByIntensityDoubleSmoothedInverted();
+
+    if (segments.empty()) return 0;
+
+    auto distributionMoments = calculateDistributionMoments(segments);
+
+    this->data_silence_length_distribution_moments.setValue(distributionMoments);
+
+    return distributionMoments.variance;
+}
+
+double Storage::getSilenceLengthSkewness()
+{
+    if (this->data_silence_length_distribution_moments.isExists())
+        return this->data_silence_length_distribution_moments.getValue()->skewness;
+
+    DEBUG("Calculate metrics silence skewness")
+
+    auto segments = this->getAutoSegmentsByIntensityDoubleSmoothedInverted();
+
+    if (segments.empty()) return 0;
+
+    auto distributionMoments = calculateDistributionMoments(segments);
+
+    this->data_silence_length_distribution_moments.setValue(distributionMoments);
+
+    return distributionMoments.skewness;
+}
+
+double Storage::getSilenceLengthKurtosis()
+{
+    if (this->data_silence_length_distribution_moments.isExists())
+        return this->data_silence_length_distribution_moments.getValue()->kurtosis;
+
+    DEBUG("Calculate metrics silence kurtosis")
+
+    auto segments = this->getAutoSegmentsByIntensityDoubleSmoothedInverted();
+
+    if (segments.empty()) return 0;
+
+    auto distributionMoments = calculateDistributionMoments(segments);
+
+    this->data_silence_length_distribution_moments.setValue(distributionMoments);
+
+    return distributionMoments.kurtosis;
+}
+
 long Storage::getVowelsCount()
 {
     if (this->data_vowels_length_distribution_moments.isExists())
@@ -144,6 +272,24 @@ long Storage::getVowelsCount()
     this->data_vowels_length_distribution_moments.setValue(distributionMoments);
 
     return distributionMoments.count;
+}
+
+double Storage::getVowelsLength()
+{
+    if (this->data_vowels_length_distribution_moments.isExists())
+        return this->data_vowels_length_distribution_moments.getValue()->length;
+
+    DEBUG("Calculate metrics vowels length")
+
+    auto segments = this->getAutoSegmentsByIntensitySmoothed();
+
+    if (segments.empty()) return 0;
+
+    auto distributionMoments = calculateDistributionMoments(segments);
+
+    this->data_vowels_length_distribution_moments.setValue(distributionMoments);
+
+    return distributionMoments.length;
 }
 
 double Storage::getVowelsLengthMean()
