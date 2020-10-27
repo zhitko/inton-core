@@ -66,6 +66,14 @@ public:
     uint32_t segmentsByIntensityMinimumLengthPoints(int frame_rate);
     void setSegmentsByIntensityMinimumLength(uint32_t value);
 
+    /**
+     * @brief segmentsByIntensityDoubleSmoothMinimumLength
+     * @return minimum length in millisec for segments calculated using double smoothed intensity
+     */
+    int segmentsByIntensityDoubleSmoothMinimumLength();
+    uint32_t segmentsByIntensityDoubleSmoothMinimumLengthPoints(int frame_rate);
+    void setSegmentsByIntensityDoubleSmoothMinimumLength(uint32_t value);
+
 private:
     void loadDefaults();
 
@@ -77,6 +85,7 @@ private:
     double segments_by_intensity_threshold_relative;
     double segments_by_intensity_threshold_absolute;
     uint32_t segments_by_intensity_minimum_length;
+    uint32_t segments_by_intensity_double_smooth_minimum_length;
 
 protected:
     bool manual;

@@ -21,6 +21,7 @@ void Config::loadDefaults()
     this->segments_by_intensity_threshold_absolute = SEGMANTS_BY_INTENSITY_THRESHOLD_ABSOLUTE;
     this->segments_by_intensity_threshold_relative = SEGMANTS_BY_INTENSITY_THRESHOLD_RELATIVE;
     this->segments_by_intensity_minimum_length = SEGMANTS_BY_INTENSITY_MIN_LENGTH;
+    this->segments_by_intensity_double_smooth_minimum_length = SEGMANTS_BY_INTENSITY_DOUBLE_SMOOTHED_MIN_LENGTH;
 }
 
 bool Config::setIsManual(bool isManual)
@@ -106,4 +107,19 @@ uint32_t Config::segmentsByIntensityMinimumLengthPoints(int frame_rate)
 void Config::setSegmentsByIntensityMinimumLength(uint32_t value)
 {
     this->segments_by_intensity_minimum_length = value;
+}
+
+int Config::segmentsByIntensityDoubleSmoothMinimumLength()
+{
+    return this->segments_by_intensity_double_smooth_minimum_length;
+}
+
+uint32_t Config::segmentsByIntensityDoubleSmoothMinimumLengthPoints(int frame_rate)
+{
+    return (1.0 * frame_rate / this->intensity_smooth_frame) / 1000 * this->segments_by_intensity_double_smooth_minimum_length;
+}
+
+void Config::setSegmentsByIntensityDoubleSmoothMinimumLength(uint32_t value)
+{
+    this->segments_by_intensity_double_smooth_minimum_length = value;
 }

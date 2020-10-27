@@ -192,7 +192,7 @@ std::vector<std::pair<uint32_t, uint32_t> > Storage::getAutoSegmentsByIntensityD
     std::vector<std::pair<uint32_t, uint32_t> > segments = intensitySmoothedToSegments(
         intensity,
         intensity_smoothed,
-        this->config->segmentsByIntensityMinimumLengthPoints(WAVE_FRAME_RATE)
+        this->config->segmentsByIntensityDoubleSmoothMinimumLengthPoints(WAVE_FRAME_RATE)
         );
 
     this->data_auto_segments_by_intensity_double_smoothed.setValue(segments);
@@ -212,14 +212,14 @@ std::vector<std::pair<uint32_t, uint32_t> > Storage::getAutoSegmentsByIntensityD
 
     std::vector<std::pair<uint32_t, uint32_t> > inverted = invertSegments(segments);
 
-    this->data_auto_segments_by_intensity_smoothed_inverted.setValue(inverted);
+    this->data_auto_segments_by_intensity_double_smoothed_inverted.setValue(inverted);
 
     return inverted;
 }
 
 std::vector<uint32_t> Storage::getAutoSegmentsByIntensityDoubleSmoothedMask()
 {
-    RETURN_VALUE_IF_EXIST(this->data_auto_segments_by_intensity_smoothed_mask)
+    RETURN_VALUE_IF_EXIST(this->data_auto_segments_by_intensity_double_smoothed_mask)
 
     DEBUG("Calculate mask for segments using intensity double smoothed")
 
