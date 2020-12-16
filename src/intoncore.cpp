@@ -15,7 +15,6 @@ Core::Core(const std::string& file_path, Config * config)
 
 Core::~Core()
 {
-    delete this->config;
     delete this->template_storage;
 }
 
