@@ -83,7 +83,16 @@ WaveFile * waveOpenFile(const char* path)
         waveCloseFile(waveFile);
         return nullptr;
     }
-    return processFile(waveFile);
+
+    waveFile = processFile(waveFile);
+
+    if (waveFile != nullptr && waveFile->file != nullptr)
+    {
+        fclose(waveFile->file);
+        waveFile->file = nullptr;
+    }
+
+    return waveFile;
 }
 
 WaveFile * processFile(WaveFile * waveFile)
@@ -575,7 +584,11 @@ void waveCloseFile(WaveFile *waveFile)
 {
     // TODO: free allocated memory in stucts
     if(waveFile == nullptr) return;
-    if(waveFile->file != nullptr) fclose(waveFile->file);
+    if(waveFile->file != nullptr)
+    {
+        fclose(waveFile->file);
+        waveFile->file = nullptr;
+    }
     if(waveFile->formatChunk != nullptr) free(waveFile->formatChunk);
     if(waveFile->waveHeader != nullptr) free(waveFile->waveHeader);
     if(waveFile->dataChunk != nullptr)
@@ -717,7 +730,8 @@ DataChunk * makeDataChunk(
     data->chunkID[2] = 't';
     data->chunkID[3] = 'a';
     uint32ToLittleEndianBytes(waveformDataSize, data->chunkDataSize);
-    data->waveformData = waveformData;
+    data->waveformData = (char *)malloc(waveformDataSize);
+    memcpy(data->waveformData, waveformData, waveformDataSize);
     data->isWaveformDataOwned = 1;
     return data;
 }

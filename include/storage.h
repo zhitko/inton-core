@@ -20,7 +20,10 @@ class Storage
 {
 public:
     Storage(const std::string& file_path, Config * config);
+    Storage(WaveFile *file, Config * config);
     virtual ~Storage();
+
+    void clear();
 
 protected:
     WaveFile* getWaveFile();

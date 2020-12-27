@@ -20,6 +20,7 @@ public:
     void load_processed_file(const std::string& file_path);
 
     Storage * getTemplate();
+    Storage * reloadTemplate(WaveFile * file);
 
 private:
     void initialize_variables();

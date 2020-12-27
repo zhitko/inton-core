@@ -4,6 +4,7 @@
 #include "IntonCore_global.h"
 
 #include "config.h"
+#include "modules/wav_file/wavFile.h"
 
 namespace IntonCore {
 
@@ -13,12 +14,13 @@ private:
     Helpers();
 
 public:
-    static void makeSimpleWaveFileFromRawData(const std::string& path,
+    static WaveFile * makeSimpleWaveFileFromRawData(const std::string& path,
                                               const char *data,
                                               uint32_t chunkDataSize,
                                               uint16_t numberOfChannels,
                                               uint32_t sampleRate,
-                                              uint16_t significantBitsPerSample
+                                              uint16_t significantBitsPerSample,
+                                              bool closeFile = true
                                               );
 };
 

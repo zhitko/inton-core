@@ -6,7 +6,8 @@
 
 using namespace IntonCore;
 
-Core::Core(const std::string& file_path, Config * config)
+Core::Core(const std::string& file_path, Config * config):
+    config(nullptr), template_storage(nullptr)
 {
     this->initialize_variables();
     this->initialize_config(config);
@@ -20,11 +21,22 @@ Core::~Core()
 
 void Core::load_processed_file(const std::string &file_path)
 {
+    // TODO: Implement comparing logic
 }
 
 Storage *Core::getTemplate()
 {
     return this->template_storage;
+}
+
+Storage *Core::reloadTemplate(WaveFile *file)
+{
+    if (this->template_storage != nullptr)
+    {
+        delete this->template_storage;
+    }
+
+    return this->template_storage = new Storage(file, this->config);
 }
 
 void Core::initialize_variables()

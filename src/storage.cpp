@@ -12,6 +12,13 @@ Storage::Storage(const std::string& file_path, Config *config):
     DEBUG("Create Storage for %s\n", file_path.c_str())
 }
 
+Storage::Storage(WaveFile *file, Config *config):
+    config(config)
+{
+    this->file_path = file->filePath;
+    this->wave_file.setValue(file);
+}
+
 Storage::~Storage()
 {
     DEBUG("Free Storage resources\n")
@@ -21,6 +28,53 @@ Storage::~Storage()
         WaveFile * wave = this->wave_file.getValue();
         waveCloseFile(wave);
     }
+    this->clear();
+}
+
+void Storage::clear()
+{
+    if (this->data_wave.isExists())
+        this->data_wave.clear();
+    if (this->data_wave_normalized.isExists())
+        this->data_wave_normalized.clear();
+    if (this->data_intensity.isExists())
+        this->data_intensity.clear();
+    if (this->data_intensity_normalized.isExists())
+        this->data_intensity_normalized.clear();
+    if (this->data_intensity_normalized_smoothed.isExists())
+        this->data_intensity_normalized_smoothed.clear();
+    if (this->data_intensity_normalized_double_smoothed.isExists())
+        this->data_intensity_normalized_double_smoothed.clear();
+    if (this->data_manual_segments_p.isExists())
+        this->data_manual_segments_p.clear();
+    if (this->data_manual_segments_t.isExists())
+        this->data_manual_segments_t.clear();
+    if (this->data_manual_segments_n.isExists())
+        this->data_manual_segments_n.clear();
+    if (this->data_auto_segments_by_intensity.isExists())
+        this->data_auto_segments_by_intensity.clear();
+    if (this->data_auto_segments_by_intensity_mask.isExists())
+        this->data_auto_segments_by_intensity_mask.clear();
+    if (this->data_auto_segments_by_intensity_inverted.isExists())
+        this->data_auto_segments_by_intensity_inverted.clear();
+    if (this->data_auto_segments_by_intensity_smoothed.isExists())
+        this->data_auto_segments_by_intensity_smoothed.clear();
+    if (this->data_auto_segments_by_intensity_smoothed_mask.isExists())
+        this->data_auto_segments_by_intensity_smoothed_mask.clear();
+    if (this->data_auto_segments_by_intensity_smoothed_inverted.isExists())
+        this->data_auto_segments_by_intensity_smoothed_inverted.clear();
+    if (this->data_auto_segments_by_intensity_double_smoothed.isExists())
+        this->data_auto_segments_by_intensity_double_smoothed.clear();
+    if (this->data_auto_segments_by_intensity_double_smoothed_mask.isExists())
+        this->data_auto_segments_by_intensity_double_smoothed_mask.clear();
+    if (this->data_auto_segments_by_intensity_double_smoothed_inverted.isExists())
+        this->data_auto_segments_by_intensity_double_smoothed_inverted.clear();
+    if (this->data_consonants_and_silence_length_distribution_moments.isExists())
+        this->data_consonants_and_silence_length_distribution_moments.clear();
+    if (this->data_silence_length_distribution_moments.isExists())
+        this->data_silence_length_distribution_moments.clear();
+    if (this->data_vowels_length_distribution_moments.isExists())
+        this->data_vowels_length_distribution_moments.clear();
 }
 
 WaveFile* Storage::getWaveFile()
@@ -29,7 +83,7 @@ WaveFile* Storage::getWaveFile()
 
     DEBUG("Try to open file %s\n", file_path.c_str())
     WaveFile * wave = waveOpenFile(file_path.c_str());
-    this->wave_file.setValue(wave);
+    if (wave != nullptr) this->wave_file.setValue(wave);
 
     return wave;
 }
