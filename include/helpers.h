@@ -22,6 +22,7 @@ public:
                                               uint16_t significantBitsPerSample,
                                               bool closeFile = true
                                               );
+    static WaveFile * openWaveFile(const std::string& path);
 };
 
 }

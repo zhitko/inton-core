@@ -13,7 +13,8 @@ WaveFile * Helpers::makeSimpleWaveFileFromRawData(const std::string& path,
                                       uint16_t numberOfChannels,
                                       uint32_t sampleRate,
                                       uint16_t significantBitsPerSample,
-                                      bool closeFile){
+                                      bool closeFile)
+{
     WaveFile *waveFile = makeWaveFileFromRawData(
                 (char *)data,
                 chunkDataSize,
@@ -27,5 +28,11 @@ WaveFile * Helpers::makeSimpleWaveFileFromRawData(const std::string& path,
     );
     saveWaveFile(waveFile, path.c_str());
     if(closeFile) waveCloseFile(waveFile);
+    return waveFile;
+}
+
+WaveFile * Helpers::openWaveFile(const std::string& path)
+{
+    WaveFile *waveFile = waveOpenFile(path.c_str());
     return waveFile;
 }
