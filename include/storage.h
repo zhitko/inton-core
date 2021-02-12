@@ -80,6 +80,7 @@ public:
     long getConsonantsAndSilenceCount();
     double getConsonantsAndSilenceLength();
     double getConsonantsAndSilenceLengthMean();
+    double getConsonantsAndSilenceLengthSquareMean();
     double getConsonantsAndSilenceLengthVariance();
     double getConsonantsAndSilenceLengthSkewness();
     double getConsonantsAndSilenceLengthKurtosis();
@@ -94,6 +95,7 @@ public:
     long getVowelsCount();
     double getVowelsLength();
     double getVowelsLengthMean();
+    double getVowelsLengthSquareMean();
     double getVowelsLengthVariance();
     double getVowelsLengthSkewness();
     double getVowelsLengthKurtosis();
@@ -139,8 +141,10 @@ private:
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_auto_segments_by_intensity_double_smoothed_inverted;
 
     StorageCache<DistributionMoments> data_consonants_and_silence_length_distribution_moments;
+    StorageCache<double> data_consonants_and_silence_length_square_mean;
     StorageCache<DistributionMoments> data_silence_length_distribution_moments;
     StorageCache<DistributionMoments> data_vowels_length_distribution_moments;
+    StorageCache<double> data_vowels_length_square_mean;
 };
 
 }
