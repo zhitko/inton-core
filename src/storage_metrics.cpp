@@ -15,7 +15,7 @@ double calculateSegmentsSquareMean(std::vector<std::pair<uint32_t, uint32_t> > s
 
     double squareSum = 0.0;
 
-    for(uint i=0; i<segments.size(); i++)
+    for(uint32_t i=0; i<segments.size(); i++)
     {
         squareSum += pow(segments.at(i).second, 2);
     }

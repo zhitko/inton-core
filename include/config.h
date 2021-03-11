@@ -62,7 +62,7 @@ public:
      * @brief segmentsByIntensityMinimumLength
      * @return minimum length in millisec for segments calculated using intensity
      */
-    int segmentsByIntensityMinimumLength();
+    uint32_t segmentsByIntensityMinimumLength();
     uint32_t segmentsByIntensityMinimumLengthPoints(int frame_rate);
     void setSegmentsByIntensityMinimumLength(uint32_t value);
 
@@ -70,7 +70,7 @@ public:
      * @brief segmentsByIntensityDoubleSmoothMinimumLength
      * @return minimum length in millisec for segments calculated using double smoothed intensity
      */
-    int segmentsByIntensityDoubleSmoothMinimumLength();
+    uint32_t segmentsByIntensityDoubleSmoothMinimumLength();
     uint32_t segmentsByIntensityDoubleSmoothMinimumLengthPoints(int frame_rate);
     void setSegmentsByIntensityDoubleSmoothMinimumLength(uint32_t value);
 

@@ -77,7 +77,6 @@ std::vector<double> IntonCore::linerSmoothVector(std::vector<double> vector, uin
 
     if (vector.empty()) return result;
 
-
     uint32_t index = 0;
     uint32_t size = vector.size();
     uint32_t shift = static_cast<uint32_t>(std::ceil(frame / 2.0));

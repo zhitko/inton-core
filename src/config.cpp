@@ -94,7 +94,7 @@ void Config::setSegmentsByIntensityThresholdRelative(double value)
     this->segments_by_intensity_threshold_relative = value;
 }
 
-int Config::segmentsByIntensityMinimumLength()
+uint32_t Config::segmentsByIntensityMinimumLength()
 {
     return this->segments_by_intensity_minimum_length;
 }
@@ -109,7 +109,7 @@ void Config::setSegmentsByIntensityMinimumLength(uint32_t value)
     this->segments_by_intensity_minimum_length = value;
 }
 
-int Config::segmentsByIntensityDoubleSmoothMinimumLength()
+uint32_t Config::segmentsByIntensityDoubleSmoothMinimumLength()
 {
     return this->segments_by_intensity_double_smooth_minimum_length;
 }
