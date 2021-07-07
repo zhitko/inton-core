@@ -9,6 +9,20 @@
 
 using namespace IntonCore;
 
+double calculateSegmentsGeneralizedMean(std::vector<std::pair<uint32_t, uint32_t> > segments, double d)
+{
+    DEBUG("Calculate calculateSegmentsGeneralizedMean")
+
+    double squareSum = 0.0;
+
+    for(uint32_t i=0; i<segments.size(); i++)
+    {
+        squareSum += pow(segments.at(i).second, d);
+    }
+
+    return pow(squareSum/segments.size(), 1.0 / d);
+}
+
 double calculateSegmentsSquareMean(std::vector<std::pair<uint32_t, uint32_t> > segments)
 {
     DEBUG("Calculate SegmentsSquareMean")
@@ -106,6 +120,23 @@ double Storage::getConsonantsAndSilenceLengthMean()
     this->data_consonants_and_silence_length_distribution_moments.setValue(distributionMoments);
 
     return distributionMoments.mean;
+}
+
+double Storage::getConsonantsAndSilenceLengthGeneralizedMean(double d)
+{
+    RETURN_VALUE_IF_EXIST(this->data_consonants_and_silence_length_generalized_mean)
+
+    DEBUG("Calculate metrics consonants and silence generalized mean")
+
+    auto segments = this->getAutoSegmentsByIntensitySmoothedInverted();
+
+    if (segments.empty()) return 0;
+
+    auto result = calculateSegmentsGeneralizedMean(segments, d);
+
+    this->data_consonants_and_silence_length_generalized_mean.setValue(result);
+
+    return result;
 }
 
 double Storage::getConsonantsAndSilenceLengthSquareMean()
@@ -339,6 +370,23 @@ double Storage::getVowelsLengthMean()
     this->data_vowels_length_distribution_moments.setValue(distributionMoments);
 
     return distributionMoments.mean;
+}
+
+double Storage::getVowelsLengthGeneralizedMean(double d)
+{
+    RETURN_VALUE_IF_EXIST(this->data_vowels_length_generalized_mean)
+
+    DEBUG("Calculate metrics vowels generalized mean")
+
+    auto segments = this->getAutoSegmentsByIntensitySmoothed();
+
+    if (segments.empty()) return 0;
+
+    auto result = calculateSegmentsGeneralizedMean(segments, d);
+
+    this->data_vowels_length_generalized_mean.setValue(result);
+
+    return result;
 }
 
 double Storage::getVowelsLengthSquareMean()
