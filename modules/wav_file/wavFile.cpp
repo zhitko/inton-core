@@ -6,6 +6,11 @@
 #include <limits.h>
 #include <cfloat>
 
+#ifdef _WIN32
+#include <string.h>
+#include <stringapiset.h>
+#endif
+
 
 #define INT32 littleEndianBytesToUInt32
 #define INT16 littleEndianBytesToUInt16
@@ -64,6 +69,32 @@ WaveFile * waveOpenHFile(int handle)
     return processFile(waveFile);
 }
 
+FILE* myOpen(const char*filename, const char*mode)
+{
+#ifdef _WIN32
+    int new_Len1 = 0;
+    int new_Len2 = 0;
+    int fn_len_s = strlen(filename);
+    int m_len_s  = strlen(mode);
+    if(fn_len_s==0)
+        return NULL;
+    if(m_len_s==0)
+        return NULL;
+    wchar_t path[MAX_PATH];
+    wchar_t wmode[MAX_PATH];
+    new_Len1 = MultiByteToWideChar(CP_UTF8, 0, filename, fn_len_s, path, fn_len_s);
+    if(new_Len1>=MAX_PATH) return NULL;
+    path[new_Len1] = L'\0';
+    new_Len2 = MultiByteToWideChar(CP_UTF8, 0, mode, m_len_s, wmode, m_len_s);
+    if(new_Len2>=MAX_PATH) return NULL;
+    wmode[new_Len2] = L'\0';
+    FILE *f = _wfopen(path, wmode);
+    return f;
+#else
+    return fopen(filename, mode);
+#endif
+}
+
 WaveFile * waveOpenFile(const char* path)
 {    
     WaveFile * waveFile = initWaveFile();
@@ -76,7 +107,7 @@ WaveFile * waveOpenFile(const char* path)
     waveFile->filePath = (char *)calloc(strlen(path)+1, sizeof(char));
     strncpy(waveFile->filePath, path, strlen(path));
 
-    waveFile->file = fopen(waveFile->filePath, "rb");
+    waveFile->file = myOpen(waveFile->filePath, "rb");
     if(waveFile->file == nullptr)
     {
         ERROR("[waveOpenFile] Could not open input file %s\n", waveFile->filePath)

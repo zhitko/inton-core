@@ -4,7 +4,7 @@
 #include "IntonCore_global.h"
 
 #include "config.h"
-#include "modules/wav_file/wavFile.h"
+#include "../modules/wav_file/wavFile.h"
 
 namespace IntonCore {
 
