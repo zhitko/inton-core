@@ -1955,39 +1955,6 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
   par->voice_bias = voice_bias; /* overwrite U/V threshold for pitch command */
 #endif
 
-#if 0
-  if (startpos < 0) startpos = 0;
-  if (endpos >= (sound->length - 1) || endpos == -1)
-    endpos = sound->length - 1;
-  if (startpos > endpos) return TCL_OK;
-
-  sf = (double) sound->samprate;
-
-  if (framestep > 0)  /* If a value was specified with -S, use it. */
-    par->frame_step = (float) (framestep / sf);
-  if(check_f0_params(interp, par, sf)){
-    Tcl_AppendResult(interp, "invalid/inconsistent parameters -- exiting.", NULL);
-    return TCL_ERROR;
-  }
-
-  total_samps = endpos - startpos + 1;
-  if(total_samps < ((par->frame_step * 2.0) + par->wind_dur) * sf) {
-    Tcl_AppendResult(interp, "input range too small for analysis by get_f0.", NULL);
-    return TCL_ERROR;
-  }
-  /* Initialize variables in get_f0.c; allocate data structures;
-   * determine length and overlap of input frames to read.
-   */
-  if (init_dp_f0(sf, par, &buff_size, &sdstep)
-      || buff_size > INT_MAX || sdstep > INT_MAX)
-  {
-    Tcl_AppendResult(interp, "problem in init_dp_f0().", NULL);
-    return TCL_ERROR;
-  }
-
-  if (debug_level)
-    Fprintf(stderr, "init_dp_f0 returned buff_size %ld, sdstep %ld.\n",buff_size, sdstep);
-#else
     if (startpos < 0) startpos = 0;
     if (endpos >= (length - 1) || endpos == -1) {
         endpos = length - 1;
@@ -1998,7 +1965,6 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
         par->frame_step = (float) (framestep / sf);
 
     if (check_f0_params(par, sf)) {
-#endif /* 0 */
 #if 0
        return "invalid/inconsistent parameters -- exiting.";
 #else
@@ -2020,13 +1986,9 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
 
     if (init_dp_f0(sf, par, &buff_size, &sdstep)
         || buff_size > INT_MAX || sdstep > INT_MAX) {
-#if 0
-        return "problem in init_dp_f0().";
-#else
        fprintf(stderr, "problem in init_dp_f0().\n");
        usage(1);
     }
-#endif /* 0 */
 
   if (buff_size > total_samps)
     buff_size = total_samps;
@@ -2043,22 +2005,6 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
   /*  Snack_ProgressCallback(sound->cmdPtr, interp, "Computing pitch", 0.0);*/
   ndone = startpos;
 
-#if 0
-  while (TRUE) {
-    done = (actsize < buff_size) || (total_samps == buff_size);
-    Snack_GetSoundData(sound, ndone, fdata, actsize);
-    /*if (sound->debug > 0) Snack_WriteLog("dp_f0...\n");*/
-    if (dp_f0(fdata, (int) actsize, (int) sdstep, sf, par,
-	      &f0p, &vuvp, &rms_speech, &acpkp, &vecsize, done)) {
-      Tcl_AppendResult(interp, "problem in dp_f0().", NULL);
-      return TCL_ERROR;
-    }
-    /*if (sound->debug > 0) Snack_WriteLogInt("done dp_f0",vecsize);*/
-    for (i = vecsize - 1; i >= 0; i--) {
-      tmp[count] = f0p[i];
-      count++;
-    }
-#else
     while (1) {
         done = (actsize < buff_size) || (total_samps == buff_size);
         for (i = 0; i < actsize; i++) {
@@ -2066,7 +2012,6 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
         }
         if (dp_f0(fdata, (int) actsize, (int) sdstep, sf, par,
                   &f0p, &vuvp, &rms_speech, &acpkp, &vecsize, done)) {
-#endif
 #if 0
             return "problem in dp_f0().";
 #else

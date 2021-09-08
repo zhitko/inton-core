@@ -41,20 +41,3 @@ include_directories(include ${SPTK_INCLUDE} ${ALG_INCLUDE})
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)
-
-if(ANDROID)
-    install(TARGETS ${PROJECT_NAME}
-        LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/../IntonCoreBin/install/lib_android
-        ARCHIVE DESTINATION ${CMAKE_BINARY_DIR}/../IntonCoreBin/install/lib_android
-        RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/../IntonCoreBin/install/bin_android
-    )
-else()
-    install(TARGETS ${PROJECT_NAME}
-        LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/../IntonCoreBin/install/lib
-        ARCHIVE DESTINATION ${CMAKE_BINARY_DIR}/../IntonCoreBin/install/lib
-        RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/../IntonCoreBin/install/bin
-    )
-endif()
-
-install(FILES ${HEADERS}
-    DESTINATION ${CMAKE_BINARY_DIR}/../IntonCoreBin/install/include)
