@@ -69,26 +69,30 @@ WaveFile * waveOpenHFile(int handle)
     return processFile(waveFile);
 }
 
-FILE* myOpen(const char*filename, const char*mode)
+wchar_t* toWchar(const char* ch)
 {
-#ifdef _WIN32
-    int new_Len1 = 0;
-    int new_Len2 = 0;
-    int fn_len_s = strlen(filename);
-    int m_len_s  = strlen(mode);
+    int new_Len = 0;
+    int fn_len_s = strlen(ch);
     if(fn_len_s==0)
         return NULL;
-    if(m_len_s==0)
-        return NULL;
-    wchar_t path[MAX_PATH];
-    wchar_t wmode[MAX_PATH];
-    new_Len1 = MultiByteToWideChar(CP_UTF8, 0, filename, fn_len_s, path, fn_len_s);
-    if(new_Len1>=MAX_PATH) return NULL;
-    path[new_Len1] = L'\0';
-    new_Len2 = MultiByteToWideChar(CP_UTF8, 0, mode, m_len_s, wmode, m_len_s);
-    if(new_Len2>=MAX_PATH) return NULL;
-    wmode[new_Len2] = L'\0';
+    wchar_t* wch = (wchar_t *) malloc(sizeof(wchar_t) * MAX_PATH);
+    new_Len = MultiByteToWideChar(CP_UTF8, 0, ch, fn_len_s, wch, fn_len_s);
+    if(new_Len>=MAX_PATH) return NULL;
+    wch[new_Len] = L'\0';
+
+    return wch;
+}
+
+FILE* ifopen(const char*filename, const char*mode)
+{
+#ifdef _WIN32
+    wchar_t* path = toWchar(filename);
+    wchar_t* wmode = toWchar(mode);
+
     FILE *f = _wfopen(path, wmode);
+
+    free(path);
+    free(wmode);
     return f;
 #else
     return fopen(filename, mode);
@@ -107,7 +111,7 @@ WaveFile * waveOpenFile(const char* path)
     waveFile->filePath = (char *)calloc(strlen(path)+1, sizeof(char));
     strncpy(waveFile->filePath, path, strlen(path));
 
-    waveFile->file = myOpen(waveFile->filePath, "rb");
+    waveFile->file = ifopen(waveFile->filePath, "rb");
     if(waveFile->file == nullptr)
     {
         ERROR("[waveOpenFile] Could not open input file %s\n", waveFile->filePath)
@@ -1044,7 +1048,7 @@ void saveWaveFile(WaveFile *waveFile, const char *filePath)
         waveFile->filePath = (char *)malloc(1 + strlen(filePath));
         strcpy(waveFile->filePath, filePath);
     }
-    if (waveFile->file == nullptr) waveFile->file = fopen(filePath, "wb");
+    if (waveFile->file == nullptr) waveFile->file = ifopen(filePath, "wb");
     if (waveFile->file == nullptr)
     {
         ERROR("[saveWaveFile] Could not open output file %s\n", filePath)
