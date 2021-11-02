@@ -75,6 +75,8 @@ void Storage::clear()
         this->data_silence_length_distribution_moments.clear();
     if (this->data_vowels_length_distribution_moments.isExists())
         this->data_vowels_length_distribution_moments.clear();
+    if (this->data_pitch.isExists())
+        this->data_pitch.clear();
 }
 
 WaveFile* Storage::getWaveFile()

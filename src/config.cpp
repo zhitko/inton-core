@@ -24,6 +24,102 @@ void Config::loadDefaults()
     this->segments_by_intensity_double_smooth_minimum_length = SEGMANTS_BY_INTENSITY_DOUBLE_SMOOTHED_MIN_LENGTH;
 }
 
+double Config::getPitchMaxFrequency() const
+{
+    return pitch_max_freq;
+}
+
+bool Config::setPitchMaxFrequency(double newPitch_max_freq)
+{
+    auto pitch_max_freq_old = pitch_max_freq;
+    pitch_max_freq = newPitch_max_freq;
+    return pitch_max_freq_old != newPitch_max_freq;
+}
+
+double Config::getPitchMinFrequency() const
+{
+    return pitch_min_freq;
+}
+
+bool Config::setPitchMinFrequency(double newPitch_min_freq)
+{
+    auto pitch_min_freq_old = pitch_min_freq;
+    pitch_min_freq = newPitch_min_freq;
+    return pitch_min_freq_old != newPitch_min_freq;
+}
+
+double Config::getPitchSamplingFrequency() const
+{
+    return pitch_sample_freq;
+}
+
+bool Config::setPitchSamplingFrequency(double newPitch_sample_freq)
+{
+    auto pitch_sample_freq_old = pitch_sample_freq;
+    pitch_sample_freq = newPitch_sample_freq;
+    return pitch_sample_freq_old != newPitch_sample_freq;
+}
+
+double Config::getPitchThresholdForSwipe() const
+{
+    return pitch_thresh_swipe;
+}
+
+bool Config::setPitchThresholdForSwipe(double newPitch_thresh_swipe)
+{
+    auto pitch_thresh_swipe_old = pitch_thresh_swipe;
+    pitch_thresh_swipe = newPitch_thresh_swipe;
+    return pitch_thresh_swipe_old != newPitch_thresh_swipe;
+}
+
+double Config::getPitchThresholdForRapt() const
+{
+    return pitch_thresh_rapt;
+}
+
+bool Config::setPitchThresholdForRapt(double newPitch_thresh_rapt)
+{
+    auto pitch_thresh_rapt_old = pitch_thresh_rapt;
+    pitch_thresh_rapt = newPitch_thresh_rapt;
+    return pitch_thresh_rapt_old != newPitch_thresh_rapt;
+}
+
+uint32_t Config::getPitchFrameShift() const
+{
+    return pitch_frame_shift;
+}
+
+bool Config::setPitchFrameShift(uint32_t newPitch_frame_shift)
+{
+    auto pitch_frame_shift_old = pitch_frame_shift;
+    pitch_frame_shift = newPitch_frame_shift;
+    return pitch_frame_shift_old != newPitch_frame_shift;
+}
+
+uint32_t Config::getPitchOutputType() const
+{
+    return pitch_otype;
+}
+
+bool Config::setPitchOutputType(uint32_t newPitch_otype)
+{
+    auto pitch_otype_old = pitch_otype;
+    pitch_otype = newPitch_otype;
+    return pitch_otype_old != newPitch_otype;
+}
+
+uint32_t Config::getPitchAlgorithmType() const
+{
+    return pitch_atype;
+}
+
+bool Config::setPitchAlgorithmType(uint32_t newPitch_atype)
+{
+    auto pitch_atype_old = pitch_atype;
+    pitch_atype = newPitch_atype;
+    return pitch_atype_old != newPitch_atype;
+}
+
 bool Config::setIsManual(bool isManual)
 {
     return this->manual = isManual;

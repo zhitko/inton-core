@@ -54,6 +54,13 @@ public:
     std::vector<double> getIntensityNormalizedDoubleSmoothed();
 
     /**
+     * @brief getPitch
+     * @return return pitch
+     */
+    std::vector<double> getPitch();
+    void cleanPitch();
+
+    /**
      * @brief getManualSegmentsP
      * @return vector of pairs with section start position and section length
      */
@@ -125,6 +132,8 @@ private:
     StorageCache<std::vector<double>> data_intensity_normalized;
     StorageCache<std::vector<double>> data_intensity_normalized_smoothed;
     StorageCache<std::vector<double>> data_intensity_normalized_double_smoothed;
+
+    StorageCache<std::vector<double>> data_pitch;
 
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_manual_segments_p;
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_manual_segments_t;

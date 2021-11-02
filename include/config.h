@@ -74,6 +74,30 @@ public:
     uint32_t segmentsByIntensityDoubleSmoothMinimumLengthPoints(int frame_rate);
     void setSegmentsByIntensityDoubleSmoothMinimumLength(uint32_t value);
 
+    uint32_t getPitchAlgorithmType() const;
+    bool setPitchAlgorithmType(uint32_t newPitch_atype);
+
+    uint32_t getPitchOutputType() const;
+    bool setPitchOutputType(uint32_t newPitch_otype);
+
+    uint32_t getPitchFrameShift() const;
+    bool setPitchFrameShift(uint32_t newPitch_frame_shift);
+
+    double getPitchThresholdForRapt() const;
+    bool setPitchThresholdForRapt(double newPitch_thresh_rapt);
+
+    double getPitchThresholdForSwipe() const;
+    bool setPitchThresholdForSwipe(double newPitch_thresh_swipe);
+
+    double getPitchSamplingFrequency() const;
+    bool setPitchSamplingFrequency(double newPitch_sample_freq);
+
+    double getPitchMinFrequency() const;
+    bool setPitchMinFrequency(double newPitch_min_freq);
+
+    double getPitchMaxFrequency() const;
+    bool setPitchMaxFrequency(double newPitch_max_freq);
+
 private:
     void loadDefaults();
 
@@ -86,6 +110,18 @@ private:
     double segments_by_intensity_threshold_absolute;
     uint32_t segments_by_intensity_minimum_length;
     uint32_t segments_by_intensity_double_smooth_minimum_length;
+
+    /*
+     * Pitch settings
+     */
+    uint32_t pitch_atype;
+    uint32_t pitch_otype;
+    uint32_t pitch_frame_shift;
+    double pitch_thresh_rapt;
+    double pitch_thresh_swipe;
+    double pitch_sample_freq;
+    double pitch_min_freq;
+    double pitch_max_freq;
 
 protected:
     bool manual;
