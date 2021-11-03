@@ -69,6 +69,7 @@ WaveFile * waveOpenHFile(int handle)
     return processFile(waveFile);
 }
 
+#ifdef _WIN32
 wchar_t* toWchar(const char* ch)
 {
     int new_Len = 0;
@@ -82,6 +83,7 @@ wchar_t* toWchar(const char* ch)
 
     return wch;
 }
+#endif
 
 FILE* ifopen(const char*filename, const char*mode)
 {
