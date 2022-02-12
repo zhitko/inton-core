@@ -52,12 +52,24 @@ public:
     std::vector<double> getIntensityNormalized();
     std::vector<double> getIntensityNormalizedSmoothed();
     std::vector<double> getIntensityNormalizedDoubleSmoothed();
+    void cleanIntensity();
 
     /**
      * @brief getPitch
      * @return return pitch
      */
     std::vector<double> getPitch();
+    std::vector<double> getPitchNormalized();
+    std::vector<double> getPitchOctavesNormalized();
+    std::vector<double> getPitchCutted();
+    std::vector<double> getPitchNormalizedCutted();
+    std::vector<double> getPitchOctavesNormalizedCutted();
+    std::vector<double> getPitchDerivative();
+    std::vector<double> getPitchNormalizedDerivative();
+    std::vector<double> getPitchOctavesNormalizedDerivative();
+    std::vector<double> getPitchCuttedDerivative();
+    std::vector<double> getPitchNormalizedCuttedDerivative();
+    std::vector<double> getPitchOctavesNormalizedCuttedDerivative();
     void cleanPitch();
 
     /**
@@ -79,6 +91,8 @@ public:
     std::vector<std::pair<uint32_t, uint32_t>> getAutoSegmentsByIntensityDoubleSmoothed();
     std::vector<std::pair<uint32_t, uint32_t>> getAutoSegmentsByIntensityDoubleSmoothedInverted();
     std::vector<uint32_t> getAutoSegmentsByIntensityDoubleSmoothedMask();
+
+    void cleanSegments();
 
     /**
      * Metrics API
@@ -134,6 +148,17 @@ private:
     StorageCache<std::vector<double>> data_intensity_normalized_double_smoothed;
 
     StorageCache<std::vector<double>> data_pitch;
+    StorageCache<std::vector<double>> data_pitch_normalized;
+    StorageCache<std::vector<double>> data_pitch_octaves_normalized;
+    StorageCache<std::vector<double>> data_pitch_cutted;
+    StorageCache<std::vector<double>> data_pitch_normalized_cutted;
+    StorageCache<std::vector<double>> data_pitch_octaves_normalized_cutted;
+    StorageCache<std::vector<double>> data_pitch_derivative;
+    StorageCache<std::vector<double>> data_pitch_normalized_derivative;
+    StorageCache<std::vector<double>> data_pitch_octaves_normalized_derivative;
+    StorageCache<std::vector<double>> data_pitch_cutted_derivative;
+    StorageCache<std::vector<double>> data_pitch_normalized_cutted_derivative;
+    StorageCache<std::vector<double>> data_pitch_octaves_normalized_cutted_derivative;
 
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_manual_segments_p;
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_manual_segments_t;

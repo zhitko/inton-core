@@ -7,7 +7,7 @@
 using namespace IntonCore;
 
 Core::Core(const std::string& file_path, Config * config):
-    config(nullptr), template_storage(nullptr)
+    config(nullptr), template_storage(nullptr), record_storage(nullptr)
 {
     this->initialize_variables();
     this->initialize_config(config);
@@ -16,7 +16,8 @@ Core::Core(const std::string& file_path, Config * config):
 
 Core::~Core()
 {
-    delete this->template_storage;
+    if (this->template_storage != nullptr) delete this->template_storage;
+    if (this->record_storage != nullptr) delete this->record_storage;
 }
 
 void Core::load_processed_file(const std::string &file_path)
@@ -29,6 +30,11 @@ Storage *Core::getTemplate()
     return this->template_storage;
 }
 
+Storage *Core::getRecord()
+{
+    return this->record_storage;
+}
+
 Storage *Core::reloadTemplate(WaveFile *file)
 {
     if (this->template_storage != nullptr)
@@ -39,10 +45,41 @@ Storage *Core::reloadTemplate(WaveFile *file)
     return this->template_storage = new Storage(file, this->config);
 }
 
+Storage *Core::reloadTemplate(const std::string& file_path)
+{
+    if (this->template_storage != nullptr)
+    {
+        delete this->template_storage;
+    }
+
+    return this->template_storage = new Storage(file_path, this->config);
+}
+
+Storage *Core::reloadRecord(WaveFile *file)
+{
+    if (this->record_storage != nullptr)
+    {
+        delete this->record_storage;
+    }
+
+    return this->record_storage = new Storage(file, this->config);
+}
+
+Storage *Core::reloadRecord(const std::string& file_path)
+{
+    if (this->record_storage != nullptr)
+    {
+        delete this->record_storage;
+    }
+
+    return this->record_storage = new Storage(file_path, this->config);
+}
+
 void Core::initialize_variables()
 {
     this->config = nullptr;
     this->template_storage = nullptr;
+    this->record_storage = nullptr;
 }
 
 void Core::initialize_template_file(const std::string &file_path)
@@ -97,6 +134,75 @@ void Core::setPitchConfig(
     is_changed = this->config->setPitchMaxFrequency(max_freq) || is_changed;
 
     if (is_changed && template_storage) {
-        template_storage->cleanPitch();
+        DEBUG("setIntensityConfig clean Pitch")
+        if (template_storage != nullptr) template_storage->cleanPitch();
+        if (record_storage != nullptr) record_storage->cleanPitch();
+    }
+}
+
+void Core::setIntensityConfig(uint32_t frame,
+                              uint32_t shift,
+                              uint32_t smooth_frame,
+                              uint32_t double_smooth_frame)
+{
+    if (this->config == nullptr)
+    {
+        initialize_config(nullptr);
+    }
+
+    auto is_changed = false;
+
+    DEBUG("setIntensityConfig %i", frame)
+    is_changed = this->config->setIntensityFrame(frame) || is_changed;
+    DEBUG("setIntensityConfig %i", shift)
+    is_changed = this->config->setIntensityShift(shift) || is_changed;
+    DEBUG("setIntensityConfig %i", smooth_frame)
+    is_changed = this->config->setIntensitySmoothFrame(smooth_frame) || is_changed;
+    DEBUG("setIntensityConfig %i", double_smooth_frame)
+    is_changed = this->config->setIntensityDoubleSmoothFrame(double_smooth_frame) || is_changed;
+
+    if (is_changed && template_storage) {
+        DEBUG("setIntensityConfig clean Intensity")
+        if (template_storage != nullptr) template_storage->cleanIntensity();
+        if (record_storage != nullptr) record_storage->cleanIntensity();
+    }
+}
+
+void Core::setSegmentsConfig(uint32_t segments_limit)
+{
+    if (this->config == nullptr)
+    {
+        initialize_config(nullptr);
+    }
+
+    auto is_changed = false;
+
+    DEBUG("setSegmentsConfig %i", segments_limit)
+    is_changed = this->config->setSegmentsByIntensityMinimumLength(segments_limit) || is_changed;
+
+    if (is_changed && template_storage) {
+        DEBUG("setIntensityConfig clean Segments")
+        if (template_storage != nullptr) template_storage->cleanSegments();
+        if (record_storage != nullptr) record_storage->cleanSegments();
+    }
+}
+
+void Core::setOctavesConfig(std::list<double> octaves)
+{
+    if (this->config == nullptr)
+    {
+        initialize_config(nullptr);
+    }
+
+    auto is_changed = false;
+
+
+    DEBUG("setIntensityConfig %lu", octaves.size())
+    is_changed = this->config->setOctaves(octaves) || is_changed;
+
+    if (is_changed && template_storage) {
+        DEBUG("setIntensityConfig clean Segments")
+        if (template_storage != nullptr) template_storage->cleanSegments();
+        if (record_storage != nullptr) record_storage->cleanSegments();
     }
 }

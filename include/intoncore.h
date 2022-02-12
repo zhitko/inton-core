@@ -7,6 +7,7 @@
 #include "helpers.h"
 
 #include <string>
+#include <list>
 
 
 namespace IntonCore {
@@ -21,6 +22,10 @@ public:
 
     Storage * getTemplate();
     Storage * reloadTemplate(WaveFile * file);
+    Storage * reloadTemplate(const std::string& file_path);
+    Storage * getRecord();
+    Storage * reloadRecord(WaveFile * file);
+    Storage * reloadRecord(const std::string& file_path);
 
     void setPitchConfig(uint32_t atype,
                         uint32_t otype,
@@ -31,6 +36,14 @@ public:
                         double min_freq,
                         double max_freq);
 
+    void setIntensityConfig(uint32_t frame,
+                            uint32_t shift,
+                            uint32_t smooth_frame,
+                            uint32_t double_smooth_frame);
+
+    void setSegmentsConfig(uint32_t segments_limit);
+    void setOctavesConfig(std::list<double> octaves);
+
 private:
     void initialize_variables();
     void initialize_template_file(const std::string& file_path);
@@ -39,6 +52,7 @@ private:
 
 protected:
     Config * config;
+    Storage * record_storage;
     Storage * template_storage;
 };
 

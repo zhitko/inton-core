@@ -4,6 +4,7 @@
 #include "IntonCore_global.h"
 
 #include <string>
+#include <list>
 
 namespace IntonCore {
 
@@ -21,28 +22,28 @@ public:
      * @return frame length used to calculate intensity
      */
     uint32_t intensityFrame();
-    void setIntensityFrame(uint32_t value);
+    bool setIntensityFrame(uint32_t value);
 
     /**
      * @brief intensityShift
      * @return frame shift used to calculate intensity
      */
     uint32_t intensityShift();
-    void setIntensityShift(uint32_t value);
+    bool setIntensityShift(uint32_t value);
 
     /**
      * @brief intensitySmoothFrame
      * @return frame used to liner smooth for intensity
      */
     uint32_t intensitySmoothFrame();
-    void setIntensitySmoothFrame(uint32_t value);
+    bool setIntensitySmoothFrame(uint32_t value);
 
     /**
      * @brief intensityDoubleSmoothFrame
      * @return frame used to liner second smooth for intensity
      */
     uint32_t intensityDoubleSmoothFrame();
-    void setIntensityDoubleSmoothFrame(uint32_t value);
+    bool setIntensityDoubleSmoothFrame(uint32_t value);
 
     /**
      * @brief segmentsByIntensityThresholdAbsolute
@@ -64,7 +65,7 @@ public:
      */
     uint32_t segmentsByIntensityMinimumLength();
     uint32_t segmentsByIntensityMinimumLengthPoints(int frame_rate);
-    void setSegmentsByIntensityMinimumLength(uint32_t value);
+    bool setSegmentsByIntensityMinimumLength(uint32_t value);
 
     /**
      * @brief segmentsByIntensityDoubleSmoothMinimumLength
@@ -98,6 +99,9 @@ public:
     double getPitchMaxFrequency() const;
     bool setPitchMaxFrequency(double newPitch_max_freq);
 
+    std::list<double> getOctaves() const;
+    bool setOctaves(std::list<double> octaves);
+
 private:
     void loadDefaults();
 
@@ -122,6 +126,8 @@ private:
     double pitch_sample_freq;
     double pitch_min_freq;
     double pitch_max_freq;
+
+    std::list<double> octaves;
 
 protected:
     bool manual;

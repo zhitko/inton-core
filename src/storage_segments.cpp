@@ -235,3 +235,25 @@ std::vector<uint32_t> Storage::getAutoSegmentsByIntensityDoubleSmoothedMask()
 
     return mask;
 }
+
+void Storage::cleanSegments()
+{
+    if (this->data_auto_segments_by_intensity.isExists())
+        this->data_auto_segments_by_intensity.clear();
+    if (this->data_auto_segments_by_intensity_mask.isExists())
+        this->data_auto_segments_by_intensity_mask.clear();
+    if (this->data_auto_segments_by_intensity_inverted.isExists())
+        this->data_auto_segments_by_intensity_inverted.clear();
+    if (this->data_auto_segments_by_intensity_smoothed.isExists())
+        this->data_auto_segments_by_intensity_smoothed.clear();
+    if (this->data_auto_segments_by_intensity_smoothed_mask.isExists())
+        this->data_auto_segments_by_intensity_smoothed_mask.clear();
+    if (this->data_auto_segments_by_intensity_smoothed_inverted.isExists())
+        this->data_auto_segments_by_intensity_smoothed_inverted.clear();
+    if (this->data_auto_segments_by_intensity_double_smoothed.isExists())
+        this->data_auto_segments_by_intensity_double_smoothed.clear();
+    if (this->data_auto_segments_by_intensity_double_smoothed_mask.isExists())
+        this->data_auto_segments_by_intensity_double_smoothed_mask.clear();
+    if (this->data_auto_segments_by_intensity_double_smoothed_inverted.isExists())
+        this->data_auto_segments_by_intensity_double_smoothed_inverted.clear();
+}

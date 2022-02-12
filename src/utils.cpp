@@ -4,7 +4,7 @@
 
 #include <algorithm>
 #include <cmath>
-
+#include<iterator>
 
 std::vector<double> IntonCore::normalizeVector(std::vector<double> vector, double target_min, double target_max)
 {
@@ -24,6 +24,27 @@ std::vector<double> IntonCore::normalizeVector(std::vector<double> vector, doubl
         zsrc = it - *source_min;
         scaled = zsrc * target_scale / source_scale;
         result.push_back(scaled + target_min);
+    }
+
+    return result;
+}
+
+std::vector<double> IntonCore::normalizeVectorByOctaves(std::vector<double> vector, std::list<double> octaves)
+{
+    std::vector<double> result;
+
+    if (vector.empty()) return result;
+
+    for (double &vi : vector) {
+        int i = 1;
+        for (double &oi : octaves) {
+            if (oi > vi) {
+                result.push_back(i);
+                break;
+            } else {
+                i++;
+            }
+        }
     }
 
     return result;
@@ -143,4 +164,40 @@ std::vector<std::pair<uint32_t, uint32_t> > IntonCore::invertSegments(std::vecto
     }
 
     return inverted;
+}
+
+std::vector<double> IntonCore::cutVectorBySegments(std::vector<double> vector, std::vector<std::pair<uint32_t,uint32_t>> segments, uint32_t segments_data_size)
+{
+    std::vector<double> data;
+    copy(vector.begin(), vector.end(), back_inserter(data));
+
+    uint32_t pos = 0;
+    for (auto &it: segments)
+    {
+        auto to = IntonCore::normalizeValue(it.first, segments_data_size, data.size());
+        for (auto i = pos; i <= to && i < data.size(); i++)
+        {
+            data.at(i) = 0;
+        }
+        pos = to + IntonCore::normalizeValue(it.second, segments_data_size, data.size());
+    }
+
+    for (auto i = pos; i < data.size(); i++)
+    {
+        data.at(i) = 0;
+    }
+
+    return data;
+}
+
+std::vector<double> IntonCore::calculateVectorDerivative(std::vector<double> vector)
+{
+    std::vector<double> data;
+
+    for (auto i = 1; i < vector.size(); i++)
+    {
+        data.push_back(vector.at(i-1) - vector.at(i));
+    }
+
+    return data;
 }

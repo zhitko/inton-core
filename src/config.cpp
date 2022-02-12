@@ -24,6 +24,18 @@ void Config::loadDefaults()
     this->segments_by_intensity_double_smooth_minimum_length = SEGMANTS_BY_INTENSITY_DOUBLE_SMOOTHED_MIN_LENGTH;
 }
 
+std::list<double> Config::getOctaves() const
+{
+    return octaves;
+}
+
+bool Config::setOctaves(std::list<double> octaves)
+{
+    auto is_changed = this->octaves == octaves;
+    this->octaves = octaves;
+    return is_changed;
+}
+
 double Config::getPitchMaxFrequency() const
 {
     return pitch_max_freq;
@@ -135,9 +147,11 @@ uint32_t Config::intensityFrame()
     return this->intensity_frame;
 }
 
-void Config::setIntensityFrame(uint32_t value)
+bool Config::setIntensityFrame(uint32_t value)
 {
+    auto old = this->intensity_frame;
     this->intensity_frame = value;
+    return old != value;
 }
 
 uint32_t Config::intensityShift()
@@ -145,9 +159,11 @@ uint32_t Config::intensityShift()
     return this->intensity_shift;
 }
 
-void Config::setIntensityShift(uint32_t value)
+bool Config::setIntensityShift(uint32_t value)
 {
+    auto old = this->intensity_shift;
     this->intensity_shift = value;
+    return old != value;
 }
 
 uint32_t Config::intensitySmoothFrame()
@@ -155,9 +171,11 @@ uint32_t Config::intensitySmoothFrame()
     return this->intensity_smooth_frame;
 }
 
-void Config::setIntensitySmoothFrame(uint32_t value)
+bool Config::setIntensitySmoothFrame(uint32_t value)
 {
+    auto old = this->intensity_smooth_frame;
     this->intensity_smooth_frame = value;
+    return old != value;
 }
 
 uint32_t Config::intensityDoubleSmoothFrame()
@@ -165,9 +183,11 @@ uint32_t Config::intensityDoubleSmoothFrame()
     return this->intensity_double_smooth_frame;
 }
 
-void Config::setIntensityDoubleSmoothFrame(uint32_t value)
+bool Config::setIntensityDoubleSmoothFrame(uint32_t value)
 {
+    auto old = this->intensity_double_smooth_frame;
     this->intensity_double_smooth_frame = value;
+    return old != value;
 }
 
 double Config::segmentsByIntensityThresholdAbsolute()
@@ -200,9 +220,11 @@ uint32_t Config::segmentsByIntensityMinimumLengthPoints(int frame_rate)
     return (1.0 * frame_rate / this->intensity_shift) / 1000 * this->segments_by_intensity_minimum_length;
 }
 
-void Config::setSegmentsByIntensityMinimumLength(uint32_t value)
+bool Config::setSegmentsByIntensityMinimumLength(uint32_t value)
 {
-    this->segments_by_intensity_minimum_length = value;
+    auto old = segments_by_intensity_minimum_length;
+    segments_by_intensity_minimum_length = value;
+    return old != value;
 }
 
 uint32_t Config::segmentsByIntensityDoubleSmoothMinimumLength()

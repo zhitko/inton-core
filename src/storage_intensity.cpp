@@ -89,3 +89,15 @@ std::vector<double> Storage::getIntensityNormalizedDoubleSmoothed()
 
     return smoothed;
 }
+
+void Storage::cleanIntensity()
+{
+    if (this->data_intensity.isExists())
+        this->data_intensity.clear();
+    if (this->data_intensity_normalized.isExists())
+        this->data_intensity_normalized.clear();
+    if (this->data_intensity_normalized_smoothed.isExists())
+        this->data_intensity_normalized_smoothed.clear();
+    if (this->data_intensity_normalized_double_smoothed.isExists())
+        this->data_intensity_normalized_double_smoothed.clear();
+}

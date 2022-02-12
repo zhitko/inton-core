@@ -5,13 +5,17 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
+#include <list>
 
 
 namespace IntonCore {
 
 std::vector<double> normalizeVector(std::vector<double> vector, double target_min = 0.0, double target_max = 1.0);
+std::vector<double> normalizeVectorByOctaves(std::vector<double> vector, std::list<double> octaves);
 std::vector<double> resizeVectorByMinMax(std::vector<double> vector, uint32_t target_size);
 std::vector<double> linerSmoothVector(std::vector<double> vector, uint32_t frame);
+std::vector<double> cutVectorBySegments(std::vector<double> vector, std::vector<std::pair<uint32_t,uint32_t>> segments, uint32_t segments_data_size);
+std::vector<double> calculateVectorDerivative(std::vector<double> vector);
 
 std::vector<uint32_t> segmentsToMask(std::vector<std::pair<uint32_t, uint32_t>> segments, uint32_t result_length);
 

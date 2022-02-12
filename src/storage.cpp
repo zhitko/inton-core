@@ -37,46 +37,21 @@ void Storage::clear()
         this->data_wave.clear();
     if (this->data_wave_normalized.isExists())
         this->data_wave_normalized.clear();
-    if (this->data_intensity.isExists())
-        this->data_intensity.clear();
-    if (this->data_intensity_normalized.isExists())
-        this->data_intensity_normalized.clear();
-    if (this->data_intensity_normalized_smoothed.isExists())
-        this->data_intensity_normalized_smoothed.clear();
-    if (this->data_intensity_normalized_double_smoothed.isExists())
-        this->data_intensity_normalized_double_smoothed.clear();
+    this->cleanIntensity();
     if (this->data_manual_segments_p.isExists())
         this->data_manual_segments_p.clear();
     if (this->data_manual_segments_t.isExists())
         this->data_manual_segments_t.clear();
     if (this->data_manual_segments_n.isExists())
         this->data_manual_segments_n.clear();
-    if (this->data_auto_segments_by_intensity.isExists())
-        this->data_auto_segments_by_intensity.clear();
-    if (this->data_auto_segments_by_intensity_mask.isExists())
-        this->data_auto_segments_by_intensity_mask.clear();
-    if (this->data_auto_segments_by_intensity_inverted.isExists())
-        this->data_auto_segments_by_intensity_inverted.clear();
-    if (this->data_auto_segments_by_intensity_smoothed.isExists())
-        this->data_auto_segments_by_intensity_smoothed.clear();
-    if (this->data_auto_segments_by_intensity_smoothed_mask.isExists())
-        this->data_auto_segments_by_intensity_smoothed_mask.clear();
-    if (this->data_auto_segments_by_intensity_smoothed_inverted.isExists())
-        this->data_auto_segments_by_intensity_smoothed_inverted.clear();
-    if (this->data_auto_segments_by_intensity_double_smoothed.isExists())
-        this->data_auto_segments_by_intensity_double_smoothed.clear();
-    if (this->data_auto_segments_by_intensity_double_smoothed_mask.isExists())
-        this->data_auto_segments_by_intensity_double_smoothed_mask.clear();
-    if (this->data_auto_segments_by_intensity_double_smoothed_inverted.isExists())
-        this->data_auto_segments_by_intensity_double_smoothed_inverted.clear();
+    this->cleanSegments();
     if (this->data_consonants_and_silence_length_distribution_moments.isExists())
         this->data_consonants_and_silence_length_distribution_moments.clear();
     if (this->data_silence_length_distribution_moments.isExists())
         this->data_silence_length_distribution_moments.clear();
     if (this->data_vowels_length_distribution_moments.isExists())
         this->data_vowels_length_distribution_moments.clear();
-    if (this->data_pitch.isExists())
-        this->data_pitch.clear();
+    this->cleanPitch();
 }
 
 WaveFile* Storage::getWaveFile()
