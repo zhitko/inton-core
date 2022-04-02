@@ -196,7 +196,7 @@ std::vector<double> IntonCore::calculateVectorDerivative(std::vector<double> vec
 
     for (auto i = 1; i < vector.size(); i++)
     {
-        data.push_back(vector.at(i-1) - vector.at(i));
+        data.push_back(vector.at(i) - vector.at(i-1));
     }
 
     return data;
