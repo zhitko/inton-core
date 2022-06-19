@@ -21,9 +21,13 @@ public:
     void load_processed_file(const std::string& file_path);
 
     Storage * getTemplate();
+    Storage * popTemplate();
+    void setTemplate(Storage * storage);
     Storage * reloadTemplate(WaveFile * file);
     Storage * reloadTemplate(const std::string& file_path);
     Storage * getRecord();
+    Storage * popRecord();
+    void setRecord(Storage * storage);
     Storage * reloadRecord(WaveFile * file);
     Storage * reloadRecord(const std::string& file_path);
 

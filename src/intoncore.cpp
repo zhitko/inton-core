@@ -30,9 +30,47 @@ Storage *Core::getTemplate()
     return this->template_storage;
 }
 
+Storage *Core::popTemplate()
+{
+    if (this->template_storage == nullptr) return nullptr;
+    auto storage = this->template_storage;
+    this->template_storage = nullptr;
+    return storage;
+}
+
+void Core::setTemplate(Storage * storage)
+{
+    if (storage == nullptr) return;
+    if (this->template_storage != nullptr)
+    {
+        delete this->template_storage;
+    }
+
+    this->template_storage = storage;
+}
+
 Storage *Core::getRecord()
 {
     return this->record_storage;
+}
+
+Storage *Core::popRecord()
+{
+    if (this->record_storage == nullptr) return nullptr;
+    auto storage = this->record_storage;
+    this->record_storage = nullptr;
+    return storage;
+}
+
+void Core::setRecord(Storage * storage)
+{
+    if (storage == nullptr) return;
+    if (this->record_storage != nullptr)
+    {
+        delete this->record_storage;
+    }
+
+    this->record_storage = storage;
 }
 
 Storage *Core::reloadTemplate(WaveFile *file)
