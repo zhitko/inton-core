@@ -326,12 +326,14 @@ long Storage::getVowelsCount()
     DEBUG("Calculate metrics vowels count")
 
     auto segments = this->getAutoSegmentsByIntensitySmoothed();
+    DEBUG("Calculate metrics vowels count 1 %i", segments.size())
 
     if (segments.empty()) return 0;
 
     auto distributionMoments = calculateDistributionMoments(segments);
 
     this->data_vowels_length_distribution_moments.setValue(distributionMoments);
+    DEBUG("Calculate metrics vowels count 2 %i", distributionMoments.count)
 
     return distributionMoments.count;
 }

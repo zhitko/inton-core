@@ -5,6 +5,7 @@
 #include <string.h>
 #include <limits.h>
 #include <cfloat>
+#include <cmath>
 
 #ifdef _WIN32
 #include <string.h>
@@ -1461,13 +1462,41 @@ std::vector<double> waveformDataToVector(void *data, uint32_t byteSize, uint16_t
 
     i = 0;
     while (len > i) {
-       x2x(vals, &x2, c1, c2, clip);
-       res.push_back(x2);
-       i++;
-       vals++;
+        x2x(vals, &x2, c1, c2, clip);
+        // if (i < 100) DEBUG("waveformDataToVector %hu=%f", *vals, x2)
+        res.push_back(x2);
+        i++;
+        vals++;
     }
 
     return res;
+}
+
+char* vectorToWaveformData(std::vector<double> data, uint16_t bitDepth)
+{
+    char c1 = 'd',
+         c2 = 'S';
+    unsigned int i, j;
+    unsigned int len = data.size();
+    char x2;
+    bool clip = true;
+    double *vals = data.data();
+
+    void x2x(void *x1, void *x2, char c1, char c2, int clip);
+
+    signed short int* res = new signed short int[len*(bitDepth/CHAR_BIT)];
+
+    i = 0;
+    j = 0;
+    while (len > i) {
+        // x2x(&data.at(i), &x2, c1, c2, clip);
+        res[j] = (int)round(data.at(i));
+        i++;
+        j++;
+        vals++;
+    }
+
+    return (char*)res;
 }
 
 void x2x(void *x1, void *x2, char c1, char c2, int clip)

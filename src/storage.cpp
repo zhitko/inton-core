@@ -33,10 +33,7 @@ Storage::~Storage()
 
 void Storage::clear()
 {
-    if (this->data_wave.isExists())
-        this->data_wave.clear();
-    if (this->data_wave_normalized.isExists())
-        this->data_wave_normalized.clear();
+    this->cleanWave();
     this->cleanIntensity();
     if (this->data_manual_segments_p.isExists())
         this->data_manual_segments_p.clear();
@@ -54,6 +51,11 @@ void Storage::clear()
     this->cleanPitch();
 }
 
+std::string Storage::getFilePath()
+{
+    return this->file_path;
+}
+
 WaveFile* Storage::getWaveFile()
 {
     RETURN_IF_EXIST(this->wave_file)
@@ -63,47 +65,4 @@ WaveFile* Storage::getWaveFile()
     if (wave != nullptr) this->wave_file.setValue(wave);
 
     return wave;
-}
-
-std::vector<double> Storage::getWave()
-{
-    RETURN_VALUE_IF_EXIST(this->data_wave)
-
-    DEBUG("Get wave")
-
-    WaveFile * wave_file = this->getWaveFile();
-
-    if (!wave_file) return std::vector<double>();
-
-    uint32_t size = littleEndianBytesToUInt32(wave_file->dataChunk->chunkDataSize);
-    uint16_t bits = littleEndianBytesToUInt16(wave_file->formatChunk->significantBitsPerSample);
-
-    std::vector<double> wave_data = waveformDataToVector(wave_file->dataChunk->waveformData, size, bits);
-
-    this->data_wave.setValue(wave_data);
-
-    return wave_data;
-}
-
-uint32_t Storage::getWaveFrameRate()
-{
-    // TODO: implement retrieve it from wave file
-    return WAVE_FRAME_RATE;
-}
-
-std::vector<double> Storage::getWaveNormalized()
-{
-    RETURN_VALUE_IF_EXIST(this->data_wave_normalized)
-
-    DEBUG("Get wave normalized")
-
-    auto wave = this->getWave();
-
-    if (wave.empty()) return std::vector<double>();
-
-    auto wave_mormalized = normalizeVector(wave, WAVE_NORMALIZED_MIN, WAVE_NORMALIZED_MAX);
-
-    this->data_wave_normalized.setValue(wave_mormalized);
-
-    return wave_mormalized;
 }

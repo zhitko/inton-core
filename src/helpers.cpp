@@ -1,4 +1,5 @@
 #include "helpers.h"
+#include "../modules/wav_file/wavFile.h"
 
 using namespace IntonCore;
 
@@ -26,6 +27,30 @@ WaveFile * Helpers::makeSimpleWaveFileFromRawData(const std::string& path,
                 nullptr,
                 nullptr
     );
+    saveWaveFile(waveFile, path.c_str());
+    if(closeFile) waveCloseFile(waveFile);
+    return waveFile;
+}
+
+WaveFile * Helpers::makeSimpleWaveFileFromVector(const std::string& path,
+                                                std::vector<double> data,
+                                                uint16_t numberOfChannels,
+                                                uint32_t sampleRate,
+                                                uint16_t significantBitsPerSample,
+                                                bool closeFile)
+{
+    uint32_t chunkDataSize = data.size()*2;
+    WaveFile *waveFile = makeWaveFileFromRawData(
+        vectorToWaveformData(data, significantBitsPerSample),
+        chunkDataSize,
+        numberOfChannels,
+        sampleRate,
+        significantBitsPerSample,
+        0,
+        nullptr,
+        nullptr,
+        nullptr
+        );
     saveWaveFile(waveFile, path.c_str());
     if(closeFile) waveCloseFile(waveFile);
     return waveFile;

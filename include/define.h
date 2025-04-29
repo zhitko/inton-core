@@ -4,6 +4,7 @@
 #include "utils.h"
 #include <cstdio>
 #include <cstdio>
+#include <cfloat>
 
 #define WHEREAMI    string_format("[%s] %s: %s", __func__, __FILE__, __LINE__)
 
@@ -37,5 +38,11 @@
 #define SEGMANTS_BY_INTENSITY_THRESHOLD_RELATIVE 0.1
 #define SEGMANTS_BY_INTENSITY_MIN_LENGTH 5
 #define SEGMANTS_BY_INTENSITY_DOUBLE_SMOOTHED_MIN_LENGTH 15
+
+#define SPECTRUM_FRAME_LENGTH 256
+#define SPECTRUM_FFT_LENGTH 256
+#define SPECTRUM_OUTPUT_FORMAT 0
+#define SPECTRUM_EPSILON 0.0
+#define SPECTRUM_RELATIVE_FLOOR_IN_DECIBELS -DBL_MAX
 
 #endif // DEFINE_H

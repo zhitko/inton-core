@@ -29,20 +29,29 @@ protected:
     WaveFile* getWaveFile();
 
 public:
+    uint32_t getWaveFrameRate();
     /**
      * @brief getWave
      * @return vector of wave signal values
      */
     std::vector<double> getWave();
-
-
-    uint32_t getWaveFrameRate();
-
+    /**
+     * @brief getWaveCorrected
+     * @return vector of corrected wave signal values
+     */
+    std::vector<double> getWaveCorrected();
+    std::vector<double> getWaveFrequenciesCorrectionValues();
+    double getWaveRMS();
+    double getWaveZeroCrossing();
+    double getWaveRMSCorrectionValues();
+    std::vector<double> getWaveDynamicZeroCrossing();
+    std::vector<double> getWaveDynamicRMS();
     /**
      * @brief getWaveNormalized
      * @return normalized vector of wave signal values in range -1 to 1
      */
     std::vector<double> getWaveNormalized();
+    void cleanWave();
 
     /**
      * @brief getIntensity
@@ -71,6 +80,18 @@ public:
     std::vector<double> getPitchNormalizedCuttedDerivative();
     std::vector<double> getPitchOctavesNormalizedCuttedDerivative();
     void cleanPitch();
+
+    /**
+     * @brief getSpectrum
+     * @return return spectrum
+     */
+    std::vector<double> getSpectrum();
+    std::vector<double> getSpectrumNormalized();
+    std::vector<double> getSpectrum2D();
+    std::vector<double> getSpectrum2DNormalized();
+    double getSpectrum2DGravityCenter();
+    double getSpectrum2DRMS();
+    void cleanSpectrum();
 
     /**
      * @brief getManualSegmentsP
@@ -131,6 +152,11 @@ public:
     double convertIntensityPointsToSec(uint32_t value);
     double convertWavePointsToSec(uint32_t value);
 
+    /**
+     * Info
+     */
+    std::string getFilePath();
+
 private:
     Config * config;
     std::string file_path;
@@ -140,6 +166,11 @@ private:
     double seconds;
 
     StorageCache<std::vector<double>> data_wave;
+    StorageCache<std::vector<double>> data_wave_corrected;
+    StorageCache<double> data_wave_rms;
+    StorageCache<double> data_wave_zero_crossing;
+    StorageCache<std::vector<double>> data_wave_dynamic_zero_crossing;
+    StorageCache<std::vector<double>> data_wave_dynamic_rms;
     StorageCache<std::vector<double>> data_wave_normalized;
 
     StorageCache<std::vector<double>> data_intensity;
@@ -159,6 +190,13 @@ private:
     StorageCache<std::vector<double>> data_pitch_cutted_derivative;
     StorageCache<std::vector<double>> data_pitch_normalized_cutted_derivative;
     StorageCache<std::vector<double>> data_pitch_octaves_normalized_cutted_derivative;
+
+    StorageCache<std::vector<double>> data_spectrum;
+    StorageCache<std::vector<double>> data_spectrum_normalized;
+    StorageCache<std::vector<double>> data_spectrum_2d;
+    StorageCache<std::vector<double>> data_spectrum_2d_normalized;
+    StorageCache<double> data_spectrum_2d_gravity_center;
+    StorageCache<double> data_spectrum_2d_rms;
 
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_manual_segments_p;
     StorageCache<std::vector<std::pair<uint32_t, uint32_t>>> data_manual_segments_t;

@@ -125,15 +125,18 @@ std::vector<std::pair<uint32_t, uint32_t> > Storage::getAutoSegmentsByIntensityS
     DEBUG("Calculate segments using intensity smoothed")
 
     auto intensity = this->getIntensityNormalized();
+    DEBUG("Calculate segments using intensity smoothed 1 %i", intensity.size())
 
     if (intensity.empty()) return std::vector<std::pair<uint32_t, uint32_t> >();
 
     auto intensity_smoothed = this->getIntensityNormalizedSmoothed();
+    auto minLenght = this->config->segmentsByIntensityMinimumLengthPoints(WAVE_FRAME_RATE);
+    DEBUG("Calculate segments using intensity smoothed 2 %i", minLenght)
 
     std::vector<std::pair<uint32_t, uint32_t> > segments = intensitySmoothedToSegments(
         intensity,
         intensity_smoothed,
-        this->config->segmentsByIntensityMinimumLengthPoints(WAVE_FRAME_RATE)
+        minLenght
         );
 
     this->data_auto_segments_by_intensity_smoothed.setValue(segments);

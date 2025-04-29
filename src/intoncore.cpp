@@ -6,47 +6,57 @@
 
 using namespace IntonCore;
 
-Core::Core(const std::string& file_path, Config * config):
-    config(nullptr), template_storage(nullptr), record_storage(nullptr)
+Core::Core(Config * config):
+    config(nullptr), record_storage(nullptr)
 {
     this->initialize_variables();
     this->initialize_config(config);
-    this->initialize_template_file(file_path);
+}
+
+Core::Core(const std::string& file_path, Config * config):
+    config(nullptr), record_storage(nullptr)
+{
+    this->initialize_variables();
+    this->initialize_config(config);
+    this->reloadTemplate(file_path);
 }
 
 Core::~Core()
 {
-    if (this->template_storage != nullptr) delete this->template_storage;
+    if (this->templates_storage.size() != 0) this->clean_templates();
     if (this->record_storage != nullptr) delete this->record_storage;
 }
 
-void Core::load_processed_file(const std::string &file_path)
+void Core::clean_templates()
 {
-    // TODO: Implement comparing logic
+    for (const auto& [key, value] : this->templates_storage)
+    {
+        delete value;
+    }
+    this->templates_storage.clear();
 }
 
-Storage *Core::getTemplate()
+Storage *Core::getTemplate(const std::string& key)
 {
-    return this->template_storage;
+    return this->templates_storage.at(key);
 }
 
-Storage *Core::popTemplate()
+Storage *Core::popTemplate(const std::string& key)
 {
-    if (this->template_storage == nullptr) return nullptr;
-    auto storage = this->template_storage;
-    this->template_storage = nullptr;
-    return storage;
+    if (this->templates_storage.count(key) == 0) return nullptr;
+    auto storage = this->templates_storage.extract(key);
+    return storage.mapped();
 }
 
-void Core::setTemplate(Storage * storage)
+void Core::setTemplate(Storage * storage, const std::string& key)
 {
     if (storage == nullptr) return;
-    if (this->template_storage != nullptr)
+    if (this->templates_storage.count(key) != 0)
     {
-        delete this->template_storage;
+        auto t = this->templates_storage.extract(key);
+        delete t.mapped();
     }
-
-    this->template_storage = storage;
+    this->templates_storage[key] = storage;
 }
 
 Storage *Core::getRecord()
@@ -73,24 +83,26 @@ void Core::setRecord(Storage * storage)
     this->record_storage = storage;
 }
 
-Storage *Core::reloadTemplate(WaveFile *file)
+Storage *Core::reloadTemplate(WaveFile *file, const std::string& key)
 {
-    if (this->template_storage != nullptr)
+    if (this->templates_storage.count(key) != 0)
     {
-        delete this->template_storage;
+        auto t = this->templates_storage.extract(key);
+        delete t.mapped();
     }
 
-    return this->template_storage = new Storage(file, this->config);
+    return this->templates_storage[key] = new Storage(file, this->config);
 }
 
-Storage *Core::reloadTemplate(const std::string& file_path)
+Storage *Core::reloadTemplate(const std::string& file_path, const std::string& key)
 {
-    if (this->template_storage != nullptr)
+    if (this->templates_storage.count(key) != 0)
     {
-        delete this->template_storage;
+        auto t = this->templates_storage.extract(key);
+        delete t.mapped();
     }
 
-    return this->template_storage = new Storage(file_path, this->config);
+    return this->templates_storage[key] = new Storage(file_path, this->config);
 }
 
 Storage *Core::reloadRecord(WaveFile *file)
@@ -116,13 +128,8 @@ Storage *Core::reloadRecord(const std::string& file_path)
 void Core::initialize_variables()
 {
     this->config = nullptr;
-    this->template_storage = nullptr;
+//    this->template_storage = nullptr;
     this->record_storage = nullptr;
-}
-
-void Core::initialize_template_file(const std::string &file_path)
-{
-    this->template_storage = new Storage(file_path, this->config);
 }
 
 void Core::initialize_config(Config * config)
@@ -134,6 +141,53 @@ void Core::initialize_config(Config * config)
     else
     {
         this->config = new Config();
+    }
+}
+
+void Core::setWaveConfig(
+    double wave_correction_high_frequency,
+    double wave_correction_low_frequency,
+    double wave_correction_strength,
+    double wave_dynamic_zero_crossing_frame_sec,
+    double wave_dynamic_zero_crossing_shift_sec,
+    double wave_dynamic_zero_crossing_target,
+    double wave_dynamic_strength_target,
+    int wave_correction_type
+) {
+    if (this->config == nullptr)
+    {
+        initialize_config(nullptr);
+    }
+
+    auto is_changed = false;
+
+    DEBUG("setWaveCorrectionHighFrequency %f", wave_correction_high_frequency)
+    is_changed = this->config->setWaveCorrectionHighFrequency(wave_correction_high_frequency) || is_changed;
+    DEBUG("setWaveCorrectionLowFrequency %f", wave_correction_low_frequency)
+    is_changed = this->config->setWaveCorrectionLowFrequency(wave_correction_low_frequency) || is_changed;
+    DEBUG("setWaveCorrectionStrength %f", wave_correction_strength)
+    is_changed = this->config->setWaveCorrectionStrength(wave_correction_strength) || is_changed;
+    DEBUG("setWaveDynamicZeroCrossingFrameSec %f", wave_dynamic_zero_crossing_frame_sec)
+    is_changed = this->config->setWaveDynamicZeroCrossingFrameSec(wave_dynamic_zero_crossing_frame_sec) || is_changed;
+    DEBUG("setWaveDynamicZeroCrossingShiftSec %f", wave_dynamic_zero_crossing_shift_sec)
+    is_changed = this->config->setWaveDynamicZeroCrossingShiftSec(wave_dynamic_zero_crossing_shift_sec) || is_changed;
+    DEBUG("setWaveDynamicZeroCrossingTarget %f", wave_dynamic_zero_crossing_target)
+    is_changed = this->config->setWaveDynamicZeroCrossingTarget(wave_dynamic_zero_crossing_target) || is_changed;
+    DEBUG("setWaveDynamicStrengthTarget %f", wave_dynamic_strength_target)
+    is_changed = this->config->setWaveDynamicStrengthTarget(wave_dynamic_strength_target) || is_changed;
+    DEBUG("setWaveCorrectionType %i", wave_correction_type)
+    is_changed = this->config->setWaveCorrectionType(wave_correction_type) || is_changed;
+
+    if (is_changed) {
+        DEBUG("setIntensityConfig clean Wave")
+        if (templates_storage.size() > 0)
+        {
+            for (const auto& [key, value] : this->templates_storage)
+            {
+                value->cleanWave();
+            }
+        }
+        if (record_storage != nullptr) record_storage->cleanWave();
     }
 }
 
@@ -171,10 +225,47 @@ void Core::setPitchConfig(
     DEBUG("setPitchMaxFrequency %f", max_freq)
     is_changed = this->config->setPitchMaxFrequency(max_freq) || is_changed;
 
-    if (is_changed && template_storage) {
+    if (is_changed) {
         DEBUG("setIntensityConfig clean Pitch")
-        if (template_storage != nullptr) template_storage->cleanPitch();
+        if (templates_storage.size() > 0)
+        {
+            for (const auto& [key, value] : this->templates_storage)
+            {
+                value->cleanPitch();
+            }
+        }
         if (record_storage != nullptr) record_storage->cleanPitch();
+    }
+}
+
+void Core::setSpectrumConfig(uint32_t frame_length,
+                             uint32_t fft_length,
+                             uint32_t output_format)
+{
+    if (this->config == nullptr)
+    {
+        initialize_config(nullptr);
+    }
+
+    auto is_changed = false;
+
+    DEBUG("setIntensityConfig %i", frame_length)
+    is_changed = this->config->setSpectrumFrameLength(frame_length) || is_changed;
+    DEBUG("setIntensityConfig %i", fft_length)
+    is_changed = this->config->setSpectrumFftLength(fft_length) || is_changed;
+    DEBUG("setIntensityConfig %i", output_format)
+    is_changed = this->config->setSpectrumOutputFormat(output_format) || is_changed;
+
+    if (is_changed) {
+        DEBUG("setSpectrumConfig clean Spectrum")
+        if (templates_storage.size() > 0)
+        {
+            for (const auto& [key, value] : this->templates_storage)
+            {
+                value->cleanSpectrum();
+            }
+        }
+        if (record_storage != nullptr) record_storage->cleanSpectrum();
     }
 }
 
@@ -199,9 +290,15 @@ void Core::setIntensityConfig(uint32_t frame,
     DEBUG("setIntensityConfig %i", double_smooth_frame)
     is_changed = this->config->setIntensityDoubleSmoothFrame(double_smooth_frame) || is_changed;
 
-    if (is_changed && template_storage) {
+    if (is_changed) {
         DEBUG("setIntensityConfig clean Intensity")
-        if (template_storage != nullptr) template_storage->cleanIntensity();
+        if (templates_storage.size() > 0)
+        {
+            for (const auto& [key, value] : this->templates_storage)
+            {
+                value->cleanIntensity();
+            }
+        }
         if (record_storage != nullptr) record_storage->cleanIntensity();
     }
 }
@@ -218,9 +315,15 @@ void Core::setSegmentsConfig(uint32_t segments_limit)
     DEBUG("setSegmentsConfig %i", segments_limit)
     is_changed = this->config->setSegmentsByIntensityMinimumLength(segments_limit) || is_changed;
 
-    if (is_changed && template_storage) {
+    if (is_changed) {
         DEBUG("setIntensityConfig clean Segments")
-        if (template_storage != nullptr) template_storage->cleanSegments();
+        if (templates_storage.size() > 0)
+        {
+            for (const auto& [key, value] : this->templates_storage)
+            {
+                value->cleanSegments();
+            }
+        }
         if (record_storage != nullptr) record_storage->cleanSegments();
     }
 }
@@ -238,9 +341,15 @@ void Core::setOctavesConfig(std::list<double> octaves)
     DEBUG("setIntensityConfig %lu", octaves.size())
     is_changed = this->config->setOctaves(octaves) || is_changed;
 
-    if (is_changed && template_storage) {
+    if (is_changed) {
         DEBUG("setIntensityConfig clean Segments")
-        if (template_storage != nullptr) template_storage->cleanSegments();
+        if (templates_storage.size() > 0)
+        {
+            for (const auto& [key, value] : this->templates_storage)
+            {
+                value->cleanSegments();
+            }
+        }
         if (record_storage != nullptr) record_storage->cleanSegments();
     }
 }

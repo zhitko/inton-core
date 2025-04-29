@@ -12,6 +12,8 @@ std::vector<double> Storage::getIntensity()
     RETURN_VALUE_IF_EXIST(this->data_intensity)
 
     DEBUG("Get intensity")
+    DEBUG("Get intensity %i", this->config->intensityFrame())
+    DEBUG("Get intensity %i", this->config->intensityShift())
 
     auto wave = this->getWave();
 

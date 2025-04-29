@@ -16,6 +16,28 @@ std::vector<double> resizeVectorByMinMax(std::vector<double> vector, uint32_t ta
 std::vector<double> linerSmoothVector(std::vector<double> vector, uint32_t frame);
 std::vector<double> cutVectorBySegments(std::vector<double> vector, std::vector<std::pair<uint32_t,uint32_t>> segments, uint32_t segments_data_size);
 std::vector<double> calculateVectorDerivative(std::vector<double> vector);
+std::vector<double> reinforcedVectorFrequency(std::vector<double> vector, double k);
+std::vector<double> highFrequencyReinforcedVectorFrequency(std::vector<double> vector, double k);
+std::vector<double> lowFrequencyReinforcedVectorFrequency(std::vector<double> vector, double k);
+std::vector<double> multiplyWaveVector(std::vector<double> vector, double k);
+std::vector<double> fullWaveVectorCorrection(std::vector<double> vector, double hfk, double lfk, double sk, bool twice = false);
+std::vector<double> waveVectorZeroCrossingCorrection(std::vector<double> vector, uint32_t frame_rate, double zero_crossing_target);
+std::vector<double> dynamicWaveVectorCorrection(std::vector<double> vector, uint32_t frame_rate, double zero_crossing_target, double strength_target, int frame, int shift);
+std::vector<double> dynamicWaveStrengthVectorCorrection(std::vector<double> vector, double strength_target, int frame, int shift);
+double calculateVectorRMS(std::vector<double> data);
+double calculateVectorZeroCrossing(std::vector<double> data, uint32_t frame_rate);
+std::vector<double> calculateDynamicVectorZeroCrossing(std::vector<double> vector, uint32_t frame_rate, uint32_t frame, uint32_t shift);
+std::vector<double> calculateDynamicVectorRMS(std::vector<double> vector, uint32_t frame, uint32_t shift);
+double calculateVectorGravityCenterSubvector(std::vector<double> data, int from, int to);
+double calculateVectorGravityCenter(std::vector<double> data);
+std::tuple<double, double> findZeroCrossingK(
+    std::vector<double> vector, uint32_t frame_rate, double zero_crossing_target,
+    bool twice = false,
+    double high_frequency_k = 0.0,
+    double low_frequency_k = 0.0,
+    int iteration = 0,
+    double delta = 0.5
+);
 
 std::vector<uint32_t> segmentsToMask(std::vector<std::pair<uint32_t, uint32_t>> segments, uint32_t result_length);
 

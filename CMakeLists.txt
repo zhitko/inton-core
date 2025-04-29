@@ -45,6 +45,7 @@ add_library(${PROJECT_NAME} SHARED
     ${SPTK_HEADERS}
     ${ALG_SOURCES}
     ${ALG_HEADERS}
+    src/storage_wave.cpp
 )
 
 include_directories(include

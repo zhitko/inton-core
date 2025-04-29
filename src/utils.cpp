@@ -201,3 +201,326 @@ std::vector<double> IntonCore::calculateVectorDerivative(std::vector<double> vec
 
     return data;
 }
+
+std::vector<double> IntonCore::reinforcedVectorFrequency(std::vector<double> vector, double k)
+{
+    std::vector<double> data;
+
+    //  S-n = Sn - S(n-1)*k
+    for (auto i = 1; i < vector.size(); i++)
+    {
+        data.push_back(vector.at(i) - vector.at(i-1)*k);
+    }
+
+    return data;
+}
+
+std::vector<double> IntonCore::highFrequencyReinforcedVectorFrequency(std::vector<double> vector, double k)
+{
+    std::vector<double> data;
+
+    //  S''n = S'n – S'(n-1)*k1
+    for (auto i = 2; i < vector.size(); i++)
+    {
+        if (k > 0.0) {
+            auto sn1 = vector.at(i-2) - vector.at(i-1);
+            auto sn2 = vector.at(i-1) - vector.at(i);
+            data.push_back(sn2 - sn1*k);
+        } else {
+            data.push_back(vector.at(i));
+        }
+    }
+
+    return data;
+}
+
+std::vector<double> IntonCore::lowFrequencyReinforcedVectorFrequency(std::vector<double> vector, double k)
+{
+    std::vector<double> data;
+
+    //  S''n = Sn + [S(n-1) + S(n-2) + S(n-3)]/2 * k2
+    for (auto i = 4; i < vector.size(); i++)
+    {
+        auto sn1 = vector.at(i-3);
+        auto sn2 = vector.at(i-2);
+        auto sn3 = vector.at(i-1);
+        auto sn4 = vector.at(i);
+        data.push_back(sn4 + (sn3 + sn2 + sn1)*k);
+    }
+
+    return data;
+}
+
+std::vector<double> IntonCore::multiplyWaveVector(std::vector<double> vector, double k)
+{
+    std::vector<double> data;
+    auto max = 32767 / k;
+    auto min = max * -1;
+
+    for (auto i = 0; i < vector.size(); i++)
+    {
+        auto val = vector.at(i);
+        if(val > max) {
+            data.push_back(max);
+        } else if(val < min) {
+            data.push_back(min);
+        } else {
+            data.push_back(val*k);
+        }
+    }
+
+    return data;
+}
+
+std::vector<double> IntonCore::fullWaveVectorCorrection(std::vector<double> vector, double hfk, double lfk, double sk, bool twice)
+{
+    auto wave_hf = reinforcedVectorFrequency(vector, hfk);
+    if (twice) wave_hf = reinforcedVectorFrequency(wave_hf, hfk);
+    // auto wave_lf = reinforcedVectorFrequency(wave_hf, -1.0*lfk);
+    // if (twice) wave_lf = reinforcedVectorFrequency(wave_lf, -1.0*lfk);
+    auto wave_lf = lowFrequencyReinforcedVectorFrequency(wave_hf, lfk);
+    if (twice) wave_lf = lowFrequencyReinforcedVectorFrequency(wave_lf, lfk);
+    return multiplyWaveVector(wave_lf, sk);
+}
+
+const double FIND_ZERRO_CROSSING_LIMIT = 10.0;
+const int FIND_ZERRO_CROSSING_MAX_ITERATIONS = 10;
+
+std::tuple<double, double> IntonCore::findZeroCrossingK(
+    std::vector<double> vector,
+    uint32_t frame_rate,
+    double zero_crossing_target,
+    bool twice,
+    double high_frequency_k,
+    double low_frequency_k,
+    int iteration,
+    double delta
+) {
+    auto updatedVector = IntonCore::fullWaveVectorCorrection(vector, high_frequency_k, low_frequency_k, 1.0, twice);
+    auto zero_crossing_current = IntonCore::calculateVectorZeroCrossing(updatedVector, frame_rate);
+    auto zero_crossing_delta = std::abs(zero_crossing_target - zero_crossing_current);
+    DEBUG("findZeroCrossingK: zero_crossing_current=%f", zero_crossing_current)
+    DEBUG("findZeroCrossingK: zero_crossing_target=%f", zero_crossing_target)
+    DEBUG("findZeroCrossingK: zero_crossing_delta=%f", zero_crossing_delta)
+    DEBUG("findZeroCrossingK: high_frequency_k=%f", high_frequency_k)
+    DEBUG("findZeroCrossingK: low_frequency_k=%f", low_frequency_k)
+    DEBUG("findZeroCrossingK: ---------------")
+
+    if (iteration > FIND_ZERRO_CROSSING_MAX_ITERATIONS) {
+        DEBUG("findZeroCrossingK: Done limit iterations")
+        if (twice) {
+            return {high_frequency_k, low_frequency_k};
+        } else {
+            return {-1, -1};
+        }
+    }
+
+    if (zero_crossing_delta < FIND_ZERRO_CROSSING_LIMIT) {
+        DEBUG("findZeroCrossingK: Done")
+        return {high_frequency_k, low_frequency_k};
+    }
+
+    bool is_up = zero_crossing_target > zero_crossing_current;
+    bool using_hight = high_frequency_k != 0.0 && low_frequency_k == 0.0;
+    bool using_low = low_frequency_k != 0.0 && high_frequency_k == 0.0;
+
+    if (is_up && using_hight) high_frequency_k += delta;
+    else if (is_up && using_low) low_frequency_k -= delta;
+    else if (!is_up && using_hight) high_frequency_k -= delta;
+    else if (!is_up && using_low) low_frequency_k += delta;
+    else if (is_up) high_frequency_k += delta;
+    else if (!is_up) low_frequency_k += delta;
+
+    iteration++;
+
+    return findZeroCrossingK(
+        vector,
+        frame_rate,
+        zero_crossing_target,
+        twice,
+        high_frequency_k,
+        low_frequency_k,
+        iteration,
+        delta / 2.0
+    );
+}
+
+std::vector<double> IntonCore::waveVectorZeroCrossingCorrection(
+    std::vector<double> vector,
+    uint32_t frame_rate,
+    double zero_crossing_target
+) {
+    double high_frequency_k, low_frequency_k;
+    std::tie(high_frequency_k, low_frequency_k) = findZeroCrossingK(vector, frame_rate, zero_crossing_target);
+
+    auto vec_high_frequency = reinforcedVectorFrequency(vector, high_frequency_k);
+    auto vec_low_frequency = reinforcedVectorFrequency(vec_high_frequency, -1.0*low_frequency_k);
+
+    return vec_low_frequency;
+}
+
+std::vector<double> IntonCore::dynamicWaveVectorCorrection(
+    std::vector<double> vector,
+    uint32_t frame_rate,
+    double zero_crossing_target,
+    double strength_target,
+    int frame,
+    int shift
+) {
+    std::vector<double> data;
+    for (int i=0; i<vector.size(); i++) {
+        data.push_back(0);
+    }
+
+    for (int i=0; i<vector.size(); i+=shift)
+    {
+        auto from = i;
+        auto to = i + frame;
+        if (to > vector.size()) to = vector.size();
+        std::vector<double>::const_iterator first = vector.begin() + from;
+        std::vector<double>::const_iterator last = vector.begin() + to;
+        std::vector<double> new_vec(first, last);
+
+        double high_frequency_k, low_frequency_k;
+        std::tie(high_frequency_k, low_frequency_k) = findZeroCrossingK(new_vec, frame_rate, zero_crossing_target);
+
+        auto new_vec_high_frequency = reinforcedVectorFrequency(new_vec, high_frequency_k);
+        auto new_vec_low_frequency = reinforcedVectorFrequency(new_vec_high_frequency, -1.0*low_frequency_k);
+        double strength_k = strength_target / calculateVectorRMS(new_vec_low_frequency);
+        auto corrected = multiplyWaveVector(new_vec_low_frequency, strength_k);
+
+        for (int j=0; j<corrected.size(); j++) {
+            if (data.at(i+j) == 0) {
+                data.at(i+j) = corrected.at(j);
+            } else {
+                data.at(i+j) = (data.at(i+j) + corrected.at(j)) / 2;
+            }
+        }
+    }
+
+    return data;
+}
+
+std::vector<double> IntonCore::dynamicWaveStrengthVectorCorrection(
+    std::vector<double> vector,
+    double strength_target,
+    int frame,
+    int shift
+    ) {
+    std::vector<double> data;
+    for (int i=0; i<vector.size(); i++) {
+        data.push_back(0);
+    }
+
+    for (int i=0; i<vector.size(); i+=shift)
+    {
+        auto from = i;
+        auto to = i + frame;
+        if (to > vector.size()) to = vector.size();
+        std::vector<double>::const_iterator first = vector.begin() + from;
+        std::vector<double>::const_iterator last = vector.begin() + to;
+        std::vector<double> new_vec(first, last);
+        double strength_k = strength_target / calculateVectorRMS(new_vec);
+        auto corrected = multiplyWaveVector(new_vec, strength_k);
+
+        for (int j=0; j<corrected.size(); j++) {
+            if (data.at(i+j) == 0) {
+                data.at(i+j) = corrected.at(j);
+            } else {
+                data.at(i+j) = (data.at(i+j) + corrected.at(j)) / 2;
+            }
+        }
+    }
+
+    return data;
+}
+
+double IntonCore::calculateVectorRMS(std::vector<double> data)
+{
+    double result = 0.0;
+    for (int i=0; i<data.size(); i++)
+    {
+        auto val = data.at(i);
+        result += pow(data.at(i), 2);
+    }
+    return sqrt(result / data.size());
+}
+
+double IntonCore::calculateVectorZeroCrossing(std::vector<double> data, uint32_t frame_rate)
+{
+    double result = 0.0;
+    if (data.empty()) return result;
+
+    for (int i=1; i<data.size(); i++)
+    {
+        auto value1 = data.at(i-1);
+        auto value2 = data.at(i);
+        if (value1*value2 < 0) result += 1.0;
+    }
+    result = result * frame_rate / data.size();
+    return result;
+}
+
+std::vector<double> IntonCore::calculateDynamicVectorZeroCrossing(std::vector<double> vector, uint32_t frame_rate, uint32_t frame, uint32_t shift)
+{
+    std::vector<double> data;
+    auto to = vector.size() - frame;
+    DEBUG("calculateDynamicVectorZeroCrossing: vector.size=%lo", vector.size())
+    DEBUG("calculateDynamicVectorZeroCrossing: frame=%i", frame)
+    DEBUG("calculateDynamicVectorZeroCrossing: to=%lo", to)
+
+    for (int i=0; i<to; i+=shift)
+    {
+        std::vector<double>::const_iterator first = vector.begin() + i;
+        std::vector<double>::const_iterator last = vector.begin() + i + frame;
+        std::vector<double> newVec(first, last);
+        auto zc = IntonCore::calculateVectorZeroCrossing(newVec, frame_rate);
+        data.push_back(zc);
+    }
+
+    return data;
+}
+
+std::vector<double> IntonCore::calculateDynamicVectorRMS(std::vector<double> vector, uint32_t frame, uint32_t shift)
+{
+    std::vector<double> data;
+    auto to = vector.size() - frame;
+    DEBUG("calculateDynamicVectorZeroCrossing: vector.size=%lo", vector.size())
+    DEBUG("calculateDynamicVectorZeroCrossing: frame=%i", frame)
+    DEBUG("calculateDynamicVectorZeroCrossing: to=%lo", to)
+
+    for (int i=0; i<to; i+=shift)
+    {
+        std::vector<double>::const_iterator first = vector.begin() + i;
+        std::vector<double>::const_iterator last = vector.begin() + i + frame;
+        std::vector<double> newVec(first, last);
+        auto zc = IntonCore::calculateVectorRMS(newVec);
+        data.push_back(zc);
+    }
+
+    return data;
+}
+
+double IntonCore::calculateVectorGravityCenterSubvector(std::vector<double> data, int from, int to)
+{
+    double result = 0.0;
+
+    if (from < 0) from = 0;
+    if (to > data.size()) to = data.size();
+
+    double px = 0.0;
+    double p = 0.0;
+    for (int i=from; i<to; i++)
+    {
+        px += data.at(i) * i;
+        p += data.at(i);
+    }
+    result = px / p;
+
+    return result;
+}
+
+double IntonCore::calculateVectorGravityCenter(std::vector<double> data)
+{
+    return IntonCore::calculateVectorGravityCenterSubvector(data, 0, data.size());
+}

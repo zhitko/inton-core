@@ -203,5 +203,6 @@ uint16_t littleEndianBytesToUInt16(char littleEndianBytes[2]);
 void uint16ToLittleEndianBytes(uint16_t uInt16Value, char out_LittleEndianBytes[2]);
 
 std::vector<double> waveformDataToVector(void *data, uint32_t byteSize, uint16_t bitDepth);
+char* vectorToWaveformData(std::vector<double> data, uint16_t bitDepth);
 
 #endif // WAVFILE_H
